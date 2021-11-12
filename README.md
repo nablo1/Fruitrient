@@ -25,7 +25,7 @@ In this meeting the focus was coming up with ideas and preparing for the Pitch o
 
 _Present in the meeting:_
 
-Zilind was not Part of the team as this point
+Zilind was not Part of the team at this point
 
 - Idrees
 - Bhavya
