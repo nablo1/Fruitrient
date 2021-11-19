@@ -46,3 +46,40 @@ _Present in the meeting:_
 - All team members
 
 ---
+
+**2021-11-15**
+
+The main theme of this meeting was to go through all data sources for each idea.
+
+- We looked for data sources for the covid mortality rate predictor idea.
+- Evaluated the covid datasets.
+- Contacted The Public Health Agency (Folkhälsomyndigheten) to check whether we can access their Covid-19 datasets.
+- Came up with other ideas to serve as plan B.
+- Evaluated the datasets for Plan B.
+- Created agenda for the upcoming supervision meeting.
+- Briefly discussed Assignment 1
+
+_Present in the meeting:_
+
+- All team members
+
+---
+
+**2021-11-17**
+
+In this meeting, we finalized our project idea and business use cases
+
+- We decided to create a fruit and vegetable image classifier model
+- Evaluated Data sources
+- Came up with business use cases around the fruit and vegetable image classifier
+- Discussed Assignment 1
+- Contacted our TA regarding the new idea
+- Divided the work
+  - Ruthger and Nablo will mainly work on the toy model
+  - Idrees, Bhavya, and Rilind will work on the report
+
+_Present in the meeting:_
+
+- All team members
+
+---
