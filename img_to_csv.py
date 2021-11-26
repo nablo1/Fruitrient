@@ -1,4 +1,6 @@
+import json
 import numpy as np
+import re
 
 from PIL import Image
 
@@ -7,7 +9,7 @@ import os.path
 import csv
 
 
-def pics(myDir, format='.jpg', limit=5):
+def pics(myDir, format='.jpg', limit=1):
     ret = []
     for root, _, files in os.walk(myDir, topdown=False):
         for i, name in enumerate((files)):
@@ -22,7 +24,7 @@ def process_file(file, res):
     img_file = Image.open(file)
     img_grey = img_file.resize(res).convert('L')
 
-    value = np.asarray(img_grey.getdata(), dtype=np.int)
+    value = np.asarray(img_grey.getdata(), dtype=np.int32)
     return value.flatten()
 
 
@@ -32,11 +34,50 @@ def process_file(file, res):
 source_dir, output = list(os.sys.argv)[1:3]
 pics = pics(source_dir)
 
-# Hacky way of having somewhat stable indices
-directories = {}
+sort_override = {"type": ["Apple Braeburn", "Banana", "Orange"]}
+
+labels = {}
+
+re_groups = "^(?P<state>rotten|fresh)?(?P<type>.*)"
+
+
+def lbls(path): return re.search(
+    re_groups, os.path.basename(path)).groupdict()
+
+
 for root, _ in pics:
-    directories[os.path.basename(root)] = None
-directories2 = list(directories.keys())
+    base = os.path.basename(root)
+    for k, v in lbls(root).items():
+        if v is None:
+            continue
+        if not k in labels:
+            labels[k] = {v: None}
+        else:
+            labels[k][v] = None
+
+
+for k, v in labels.items():
+    st = sorted(list(v.keys()))
+    for i, vi in enumerate(sort_override.get(k, [])):
+        swi = st.index(vi)
+        st[i], st[swi] = st[swi], st[i]
+
+    for i, vi in enumerate(st):
+        labels[k][vi] = i
+
+
+def lbls2(path):
+    ret = []
+    for k, v in re.search(
+            re_groups, os.path.basename(path)).groupdict().items():
+        if v is None:
+            continue
+        ret.append((k, labels[k][v]))
+    ret.sort(key=lambda x: x[0])
+    return ret
+
+
+ba = [(os.path.join(root, name), lbls2(root)) for root, name in pics]
 
 # final image res
 width = 28
@@ -45,17 +86,20 @@ height = 28
 with open(output, 'w') as f:
     writer = csv.writer(f)
 
-    labels = [f"pixel{i+1}" for i in range(width * height)]
-    labels.insert(0, "type")
+    csv_labels = [f"pixel{i+1}" for i in range(width * height)]
+    for k in labels.keys():
+        csv_labels.insert(0, k)
+        print(k)
 
-    writer.writerow(labels)
+    writer.writerow(csv_labels)
 
-    for i, dir in enumerate(directories2):
-        directories[dir] = i
+    for path, labelings in ba:
+        value = list(process_file(path, (width, height)))
 
-    for root, name in pics:
-        value = list(process_file(os.path.join(root, name), (width, height)))
+        for k, v in labelings:
+            value.insert(0, v)
 
-        print(name)
-        value.insert(0, directories[os.path.basename(root)])
         writer.writerow(value)
+        print(path, labelings)
+
+print(json.dumps(labels, indent=4))
