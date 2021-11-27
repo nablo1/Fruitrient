@@ -9,7 +9,7 @@ import os.path
 import csv
 
 
-def pics(myDir, format='.jpg', limit=1):
+def pics(myDir, format='.jpg', limit=5):
     ret = []
     for root, _, files in os.walk(myDir, topdown=False):
         for i, name in enumerate((files)):
@@ -33,12 +33,11 @@ def process_file(file, res):
 
 source_dir, output = list(os.sys.argv)[1:3]
 pics = pics(source_dir)
-
 sort_override = {"type": ["Apple Braeburn", "Banana", "Orange"]}
 
 labels = {}
 
-re_groups = "^(?P<state>rotten|fresh)?(?P<type>.*)"
+re_groups = "^(?P<quality>rotten|fresh)?(?P<type>.*)"
 
 
 def lbls(path): return re.search(
@@ -78,7 +77,6 @@ def lbls2(path):
 
 
 ba = [(os.path.join(root, name), lbls2(root)) for root, name in pics]
-
 # final image res
 width = 28
 height = 28
@@ -89,17 +87,16 @@ with open(output, 'w') as f:
     csv_labels = [f"pixel{i+1}" for i in range(width * height)]
     for k in labels.keys():
         csv_labels.insert(0, k)
-        print(k)
 
     writer.writerow(csv_labels)
 
     for path, labelings in ba:
+        print(path, labelings)
         value = list(process_file(path, (width, height)))
 
         for k, v in labelings:
             value.insert(0, v)
 
         writer.writerow(value)
-        print(path, labelings)
 
 print(json.dumps(labels, indent=4))

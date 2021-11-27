@@ -1,0 +1,11 @@
+{
+    "quality": {
+        "fresh": 0,
+        "rotten": 1
+    },
+    "type": {
+        "Apple Braeburn": 0,
+        "Orange": 2,
+        "Banana": 1
+    }
+}
