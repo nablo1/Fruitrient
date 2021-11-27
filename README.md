@@ -2,12 +2,13 @@
 
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
-Fruitrient is an opensource project which helps users identify a fruit from a given image. Additionally, users can also view the nutritional information of the fruit. 
+Fruitrient is an opensource project which helps users identify a fruit from a given image. Additionally, users can also view the nutritional information of the fruit.
 
 ## Installation
+
 ```bash
 # Clone Repository
-git clone git@git.chalmers.se:courses/dit825/2021/group07/fruits-classifier.git
+git clone git@git.chalmers.se:courses/dit825/2021/group07/fruitrient.git
 ```
 
 ## Usage
