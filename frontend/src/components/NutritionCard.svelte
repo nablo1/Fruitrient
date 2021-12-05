@@ -1,6 +1,6 @@
 <div class="card text-base-content text-opacity-40 rounded-box">
   <div class="card-body">
-    <h2 class="card-title">Nutrations</h2>
+    <h2 class="card-title">Nutritions</h2>
     <div class="overflow-x-auto">
       <table class="table w-full table-compact">
         <thead>

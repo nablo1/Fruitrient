@@ -2,8 +2,8 @@
   import Chart from '../components/Chart.svelte'
   import FileUpload from '../components/FileUpload.svelte'
   import NavBar from '../components/NavBar.svelte'
-  import SelectCard from '../components/selectCard.svelte'
-  import SmallCard from '../components/smallCard.svelte'
+  import SelectCard from '../components/SelectCard.svelte'
+  import SmallCard from '../components/SmallCard.svelte'
 
   const titleOne = 'Latest Version'
   const titleTwo = 'Accuracy'
