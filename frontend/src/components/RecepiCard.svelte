@@ -7,13 +7,13 @@
     />
   </figure>
   <div class="card-body">
-    <h2 class="card-title">Recepi</h2>
+    <h2 class="card-title">Recipe</h2>
     <p>
       Rerum reiciendis beatae tenetur excepturi aut pariatur est eos. Sit sit
       necessitatibus veritatis sed molestiae voluptates incidunt iure sapiente.
     </p>
     <div class="justify-center card-actions">
-      <button class="btn btn-outline btn-accent">More info</button>
+      <button class="btn btn-outline btn-accent">More Info</button>
     </div>
   </div>
 </div>

@@ -1,0 +1,15 @@
+stages:
+  - build frontend
+
+build:
+  image: node:latest
+  only:
+    changes:
+      - frontend/**/*
+  stage: build frontend
+  tags:
+    - docker
+  script:
+    - cd frontend
+    - npm install
+    - npm run build
