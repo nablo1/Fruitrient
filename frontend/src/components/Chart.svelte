@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import Chart from 'chart.js/auto'
 
-  export const data: number[] = []
+  export let data: number[]
   export let labels: string[]
 
   const createChart = () => {
@@ -14,8 +14,8 @@
         labels: labels,
         datasets: [
           {
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
+            label: 'Performance',
+            data: data,
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(54, 162, 235, 0.2)',

@@ -1,3 +1,4 @@
 falcon
 requests
 daphne
+peewee
