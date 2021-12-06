@@ -1,10 +1,18 @@
 <script lang="ts">
+  // components
+  import FileUpload from '../components/FileUpload.svelte'
   import InfoCard from '../components/InfoCard.svelte'
   import NavBar from '../components/NavBar.svelte'
   import NutritionCard from '../components/NutritionCard.svelte'
   import RecepiCard from '../components/RecepiCard.svelte'
-  import UploadImage from '../components/UploadImage.svelte'
   import WebcamCard from '../components/WebcamCard.svelte'
+
+  // import Api from '../Api'
+
+  const imageLoaded = async (data: CustomEvent) => {
+    // const post = await Api.post('/image', data.detail).catch(e=>console.log(e))
+    console.log(data.detail)
+  }
 </script>
 
 <div
@@ -19,7 +27,12 @@
     <InfoCard />
   </div>
   <div class="row-span-3 shadow-lg xl:col-span-3 bg-base-100 rounded-box">
-    <UploadImage />
+    <FileUpload
+      on:fileLoaded={imageLoaded}
+      title="Upload an Image"
+      fileType="image/*"
+      uploadText="Drop an Image, or click to select an image"
+    />
   </div>
   <div class="shadow-lg row-span-3 xl:col-span-3 bg-base-100 rounded-box">
     <WebcamCard />

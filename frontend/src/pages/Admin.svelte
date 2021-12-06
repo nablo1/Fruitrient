@@ -11,6 +11,13 @@
   const textTwo = '69,69%'
   const mlVersions = ['v.1', 'v.2', 'v.3', 'v.4', 'v.5']
   const labels = ['v.1', 'v.2', 'v.3', 'v.4', 'v.5']
+
+  // import Api from '../Api'
+
+  const fileLoaded = async (data: CustomEvent) => {
+    // const post = await Api.post('/image', data.detail).catch(e=>console.log(e))
+    console.log(data.detail)
+  }
 </script>
 
 <div
@@ -27,8 +34,13 @@
   <div class="shadow-lg rounded-box">
     <SmallCard titleOne={'Previous Version'} {textOne} {textTwo} {titleTwo} />
   </div>
-  <div class="row-span-3">
-    <FileUpload />
+  <div class="row-span-3 shadow-lg bg-base-100 rounded-box">
+    <FileUpload
+      on:fileLoaded={fileLoaded}
+      fileType="*"
+      title="Upload a file"
+      uploadText="Drop a file, or click to select a file"
+    />
   </div>
   <div class="shadow-lg rounded-box">
     <SmallCard
