@@ -8,7 +8,7 @@
 
 <div class="card bg-base-100 lg:h-96">
   <div class="card-body flex lg:flex-row lg:gap-x-10 gap-y-5">
-    <div class="w-full lg:w-1/2">
+    <div class="lg:h-80 w-full lg:w-1/2">
       <img
         class="rounded-xl h-full w-full object-cover"
         src={imgSrc}
