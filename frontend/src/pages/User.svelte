@@ -6,14 +6,17 @@
   import NutritionCard from '../components/NutritionCard.svelte'
   import RecepiCard from '../components/RecepiCard.svelte'
   import WebcamCard from '../components/WebcamCard.svelte'
+  import CapturedImageCard from '../components/CapturedImageCard.svelte'
 
-  import { classify } from '../Api'
+  import { Classification, classify } from '../Api'
 
+  let imgSrc: string
+  let mlResponse: Classification | null
   const imageLoaded = async (data: CustomEvent) => {
     // const post = await Api.post('/image', data.detail).catch(e=>console.log(e))
-    console.log(data.detail)
-    console.log(await classify(data.detail))
-
+    console.log(await classify(data.detail.binary))
+    mlResponse = await classify(data.detail.binary)
+    imgSrc = data.detail.imaSrc
   }
 </script>
 
@@ -39,6 +42,12 @@
   <div class="shadow-lg row-span-3 xl:col-span-3 bg-base-100 rounded-box">
     <WebcamCard />
   </div>
+  <div class="col-span-1 shadow-lg xl:col-span-6 rounded-box">
+    <CapturedImageCard {imgSrc} {mlResponse} />
+  </div>
+  <div class="row-span-3 p-4 shadow-lg xl:col-span-3 bg-base-100  rounded-box">
+    <NutritionCard />
+  </div>
   <div class="shadow-lg xl:col-span-2 bg-base-100 rounded-box">
     <RecepiCard />
   </div>
@@ -47,8 +56,5 @@
   </div>
   <div class="shadow-lg xl:col-span-2 bg-base-100  rounded-box">
     <RecepiCard />
-  </div>
-  <div class="row-span-3 p-4 shadow-lg xl:col-span-3 bg-base-100  rounded-box">
-    <NutritionCard />
   </div>
 </div>

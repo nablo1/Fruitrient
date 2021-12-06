@@ -18,7 +18,10 @@
       reader.onloadend = (evt) => {
         progress = false
         if (evt.target.readyState === FileReader.DONE) {
-          dispatch('fileLoaded', evt.target.result)
+          dispatch('fileLoaded', {
+            binary: evt.target.result,
+            imaSrc: URL.createObjectURL(acceptedFiles[0]),
+          })
         }
       }
     }
