@@ -7,11 +7,13 @@
   import RecepiCard from '../components/RecepiCard.svelte'
   import WebcamCard from '../components/WebcamCard.svelte'
 
-  // import Api from '../Api'
+  import { classify } from '../Api'
 
   const imageLoaded = async (data: CustomEvent) => {
     // const post = await Api.post('/image', data.detail).catch(e=>console.log(e))
     console.log(data.detail)
+    console.log(await classify(data.detail))
+
   }
 </script>
 

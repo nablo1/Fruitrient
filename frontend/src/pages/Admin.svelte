@@ -5,17 +5,41 @@
   import SelectCard from '../components/SelectCard.svelte'
   import SmallCard from '../components/SmallCard.svelte'
 
+  import { ActiveClassifier, active_classifier, active_classifier_history, Classifier, classifiers, set_active_classifier } from '../Api'
+  import { onMount } from 'svelte';
+
   const titleOne = 'Latest Version'
   const titleTwo = 'Accuracy'
   const textOne = 'V.5'
   const textTwo = '69,69%'
-  const mlVersions = ['v.1', 'v.2', 'v.3', 'v.4', 'v.5']
-  const labels = ['v.1', 'v.2', 'v.3', 'v.4', 'v.5']
+  let mlVersions = [] as Classifier[]
+  let activeMlHistory = [] as ActiveClassifier[]
+  let activeMl = null as ActiveClassifier | null
 
-  // import Api from '../Api'
+  let testing: any = undefined
+
+  const update_stuff = async (testing: any) => {
+    console.log("update stuff")
+    if (testing && testing.id !== activeMl?.id ? await set_active_classifier(testing.id) : false) {
+      activeMl = await active_classifier()
+      activeMlHistory = await active_classifier_history()
+    }
+  }
+  
+  $: update_stuff(testing)
+  $: console.log("activeMl: ", activeMl)
+  $: console.log("mlVersions: ", mlVersions)
+  $: console.log("activeMlHistory: ", activeMlHistory)
+
+  onMount(async () => {
+    mlVersions = await classifiers()
+    activeMl = await active_classifier()
+    activeMlHistory = await active_classifier_history()
+
+    testing = activeMl
+  })
 
   const fileLoaded = async (data: CustomEvent) => {
-    // const post = await Api.post('/image', data.detail).catch(e=>console.log(e))
     console.log(data.detail)
   }
 </script>
@@ -29,10 +53,10 @@
     <NavBar />
   </div>
   <div class="shadow-lg rounded-box">
-    <SmallCard {titleOne} {textOne} {textTwo} {titleTwo} />
+    <SmallCard {titleOne} textOne={activeMl ? activeMl.classifier.name : "???"} textTwo={activeMl ? activeMl.classifier.performance + "%" : "???"} {titleTwo} />
   </div>
   <div class="shadow-lg rounded-box">
-    <SmallCard titleOne={'Previous Version'} {textOne} {textTwo} {titleTwo} />
+    <SmallCard titleOne={'Previous Version'} textOne={activeMlHistory.length > 1 ? activeMlHistory[1]?.classifier.name : "???"} textTwo={ activeMlHistory.length > 1 ? activeMlHistory[1]?.classifier.performance + "%" : "???"} {titleTwo} />
   </div>
   <div class="row-span-3 shadow-lg bg-base-100 rounded-box">
     <FileUpload
@@ -51,12 +75,12 @@
     />
   </div>
   <div class="shadow-lg rounded-box">
-    <SelectCard options={mlVersions} />
+    <SelectCard bind:selected={testing} options={mlVersions} transform={el => el.id + " - " + el.name} />
   </div>
   <div class="card col-span-1 row-span-2 shadow-lg xl:col-span-2 bg-base-100">
     <div class="card-body">
       <h2 class="my-4 text-4xl font-bold card-title">Statistics</h2>
-      <Chart {labels} />
+      <Chart labels={mlVersions.map(el => el.name)} data={mlVersions.map(el => el.performance + 1)} />
     </div>
   </div>
 </div>
