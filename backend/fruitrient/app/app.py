@@ -1,18 +1,20 @@
 import logging
 import pickle
+import falcon
+from falcon.media.base import BaseHandler
 from falcon.asgi import App
 from falcon import CORSMiddleware
 from peewee import SqliteDatabase
 from .models import ClassifierModel, TrackedClassifier, bind
 
 from .classification import RandomClassifier
-from .handlers import ActiveClassifierResource, ClassifierResource, PredictionResource, UserActions
+from .handlers import ActiveClassifierResource, AdminActions, ClassifierResource, PredictionResource, UserActions
 
 logger = logging.getLogger(__name__)
 
+
 def create_app() -> App:
 
-    app = App(middleware=[CORSMiddleware()])
 
     db = SqliteDatabase("testing.db")
     assert db.connect(True)
@@ -46,6 +48,8 @@ def create_app() -> App:
         assert False
 
     classifier = TrackedClassifier()
+
+    app = App(middleware=[CORSMiddleware()])
 
     # Actions
     user = UserActions(classifier)

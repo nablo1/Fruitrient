@@ -2,3 +2,7 @@ falcon
 requests
 daphne
 peewee
+numpy
+Pillow
+joblib
+sklearn
