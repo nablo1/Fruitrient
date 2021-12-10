@@ -1,30 +1,27 @@
 
-from typing import Optional, Tuple
+import logging
+from typing import Optional
 import random
+from PIL import Image
+import numpy as np
 
-class FruitRes:
+logger = logging.getLogger(__name__)
+
+
+class PredictionRes:
     name: str
     type: int
-    certainty: float
+    fresh: bool
 
-    def __init__(self, name: str, type: int, certainty: float) -> None:
+    def __init__(self, name: str, type: int, fresh: float) -> None:
         self.name = name
         self.type = type
-        self.certainty = certainty
-
-class QualityRes:
-    quality: float
-    certainty: float
-
-    def __init__(self, quality: float, certainty: float) -> None:
-        self.quality = quality
-        self.certainty = certainty
-
-
-Image = bytes
+        self.fresh = fresh
 
 class Classifier:
-    def classify(self, _: Image) -> Optional[Tuple[FruitRes, QualityRes]]:
+    def classify(self, _: Image) -> Optional[PredictionRes]:
+        logger.info("BASE CLASSIFIER")
+
         return None
 
 class RandomClassifier(Classifier):
@@ -32,20 +29,42 @@ class RandomClassifier(Classifier):
     fruits = ["Gomu Gomu No Mi", "Mera Mera no Mi", "Gura Gura no Mi",
               "Ito Ito no Mi", "Jiki Jiki no Mi", "Ope Ope no Mi"]
 
-    def classify(self, _: Image) -> Optional[Tuple[FruitRes, QualityRes]]:
-        return (
-            FruitRes(self.fruits[random.randrange(
-                0, len(self.fruits))], 1, random.random()),
-            QualityRes(random.random(), random.random())
-        )
+    def classify(self, _: Image) -> Optional[PredictionRes]:
+        logger.info("RANDOM CLASSIFIER")
+        fruit_type = random.randrange(0, len(self.fruits))
+        some = PredictionRes(self.fruits[fruit_type], fruit_type, random.randint(0,1) == 1)
+        return some
 
-# TODO: actually implement once we have models to test
 class SciKitClassifier(Classifier):
     model = None
+    labels = {}
 
-    def __init__(self, model) -> None:
+    def __init__(self, model, labels) -> None:
         self.model = model
+        self.labels = labels
 
-    def classifiy(self, _: Image) -> Optional[Tuple[FruitRes, QualityRes]]:
-        # self.model.predict(image)
-        return None
+    def classify(self, image: Image) -> Optional[PredictionRes]:
+        logger.info("SCIKIT CLASSIFIER")
+
+        image = image.resize((28,28)).convert('L')
+        img_data = np.asarray(image.getdata(), dtype=np.int32).flatten()
+
+        res = int(self.model.predict([img_data])[0])
+
+        try:
+            fruit_name = self.labels[res]
+        except:
+            logger.info("Could not get the correct label")
+            fruit_name = "Unknown" # Means our labels don't match
+        
+        rotten = False
+
+        if fruit_name.startswith("fresh"):
+            fruit_name = fruit_name.split("fresh")[-1]
+            rotten = True
+
+        if fruit_name.startswith("rotten"):
+            fruit_name = fruit_name.split("rotten")[-1]
+
+        return PredictionRes(fruit_name, res, not rotten)
+

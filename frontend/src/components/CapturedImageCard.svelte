@@ -25,23 +25,15 @@
         <h1 class="card-title">Image Information</h1>
         <div>
           <b>Name:</b>
-          <span>{mlResponse?.fruit.name}</span>
+          <span>{mlResponse?.name}</span>
         </div>
         <div>
           <b>Type:</b>
-          <span>{mlResponse?.fruit.type}</span>
+          <span>{mlResponse?.type}</span>
         </div>
         <div>
-          <b>Certainty:</b>
-          <span>{mlResponse?.fruit.certainty.toFixed(4)}</span>
-        </div>
-        <div>
-          <b>Quality Certainty:</b>
-          <span>{mlResponse?.quality.certainty.toFixed(4)}</span>
-        </div>
-        <div>
-          <b>Quality:</b>
-          <span>{mlResponse?.quality.quality.toFixed(4)}</span>
+          <b>Is Fresh:</b>
+          <span>{mlResponse?.fresh}</span>
         </div>
       {:else}
         <p class="">Please Upload An Image to be calssifed</p>

@@ -14,8 +14,9 @@
   let imgSrc: string
   let mlResponse: Classification | null
   const imageLoaded = async (data: CustomEvent) => {
-    console.log(await classify(data.detail.binary))
-    mlResponse = await classify(data.detail.binary)
+    console.log(data.detail.binary)
+    mlResponse = await classify(new Uint8Array(data.detail.binary))
+    console.log(mlResponse)
     imgSrc = data.detail.imaSrc
   }
 

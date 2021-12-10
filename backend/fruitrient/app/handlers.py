@@ -3,11 +3,14 @@ from falcon.asgi import Request, Response
 import logging
 import json
 import pickle
+import io
+import joblib
+from PIL import Image
 
 from .app import TrackedClassifier
 from .models import ClassifierHistoryModel, ClassifierHistoryModelExt, ClassifierModel, ClassifierModelExt, PredictionModel, PredictionModelExt
 
-from .classification import Classifier
+from .classification import Classifier, SciKitClassifier
 
 logger = logging.getLogger(__name__)
 
@@ -28,17 +31,24 @@ def active_classifier_to_dict(h: ClassifierHistoryModel):
 
 def prediction_to_dict(p: PredictionModel):
     return {
-        "fruit": {
-            "name": p.fruit_name,
-            "type": p.fruit_type,
-            "certainty": p.fruit_certainty
-        },
-        "quality": {
-            "quality": p.quality,
-            "certainty": p.quality_certainty
-        }
+        "name": p.name,
+        "type": p.type,
+        "fresh": p.fresh,
     }
 
+
+async def collect_form(form):
+    media = {}
+    async for part in form:
+        if part.content_type.startswith("image"):
+            media[part.name] = Image.open(io.BytesIO(await part.stream.readall()))
+        elif part.content_type.startswith("application/octet-stream"):
+            media[part.name] = await part.stream.readall()
+        elif part.content_type.startswith("text/plain"):
+            media[part.name] = (await part.stream.readall()).decode("ascii") 
+        else:
+            media[part.name] = await part.media
+    return media
 
 class UserActions:
     classifier: Classifier
@@ -47,29 +57,17 @@ class UserActions:
         self.classifier = classifier
 
     async def on_put(self, req: Request, resp: Response) -> None:
-        image = await req.stream.readall()
+        image = Image.open(io.BytesIO(await req.stream.readall()))
 
         res = self.classifier.classify(image)
         
         if res == None:
             resp.status = falcon.HTTP_400
             resp.text = "Classification failed!"
+            logger.info("Classification failed!" + str(res))
             return
 
-        fruit, quality = res
-
-        ret = \
-            {
-                "fruit": {
-                    "name": fruit.name,
-                    "type": fruit.type,
-                    "certainty": fruit.certainty
-                },
-                "quality": {
-                    "quality": quality.quality,
-                    "certainty": quality.certainty
-                }
-            }
+        ret = prediction_to_dict(res)
 
         resp.text = json.dumps(ret)
         resp.status = falcon.HTTP_200
@@ -79,9 +77,7 @@ class AdminActions:
     classifier: TrackedClassifier
 
     def __init__(self, classifier: TrackedClassifier) -> None:
-        self.classifier = classifier
-
-    # TODO: implement stuff
+        self.classifier = classifier  
 
 class ActiveClassifierResource:
     
@@ -119,15 +115,26 @@ class ActiveClassifierResource:
 class ClassifierResource:
     
     async def on_post(self, req: Request, resp: Response) -> None:
-        jsn = req.get_media()
-        bits = bytes(jsn["bits"])
+        media = await collect_form(await req.media)
 
-        pickle.loads(bits)
-        
+        bits = media["model_bytes"]
+
+        # Try loading up the pickled object
+        try:
+            pyobj = pickle.loads(bits)
+        except:
+            pyobj = joblib.load(io.BytesIO(bits))
+
+        # We're just going to assume the file is from SciKit
+        if not issubclass(type(pyobj), Classifier):
+            logger.info("redumping SciKit Classifier")
+            labels = media["labels"]
+            pyobj = SciKitClassifier(pyobj, labels)
+
         ClassifierModel(
-            name = jsn["name"],
-            performance = jsn["performance"],
-            model_bytes = bits
+            name = media["name"],
+            performance = 0,
+            model_bytes = pickle.dumps(pyobj)
         ).save()
 
         resp.status = falcon.HTTP_200

@@ -1,11 +1,12 @@
 import datetime
+import io
 import logging
 import pickle
-from typing import Optional, Tuple
+from typing import Optional
 from peewee import Model, BlobField, DateTimeField, FloatField, AutoField, IntegerField, CharField, ForeignKeyField, Database
 
 
-from .classification import Classifier, FruitRes, Image, QualityRes 
+from .classification import Classifier, Image, PredictionRes 
 
 logger = logging.getLogger(__name__)
 
@@ -39,11 +40,9 @@ class PredictionModel(Model):
     id = AutoField()
     predicted_by = ForeignKeyField(ClassifierModel, backref='predictions')
     image = BlobField()
-    fruit_name = CharField()
-    fruit_type = IntegerField()
-    fruit_certainty = FloatField
-    quality = FloatField()
-    quality_certainty = FloatField()
+    name = CharField()
+    type = IntegerField()
+    fresh = FloatField()
 
 class PredictionModelExt:
     def iter():
@@ -99,9 +98,10 @@ def bind(db: Database):
     db.bind(models)
     db.create_tables(models)
 
+
 class TrackedClassifier(Classifier):
 
-    def classify(self, image: Image) -> Optional[Tuple[FruitRes, QualityRes]]:
+    def classify(self, image: Image) -> Optional[PredictionRes]:
 
         # We're effectively polling the active classifier,
         # since we don't own the backing storage it's considered volatile.
@@ -118,19 +118,19 @@ class TrackedClassifier(Classifier):
         if res == None:
             return None
         
-        fruit, quality = res
-
         try:
+            image_bytes = io.BytesIO()
+            image.save(image_bytes, format='png')
+            image_bytes.seek(0)
             PredictionModel(
                 predicted_by = classifier.classifier.id,
-                image = image,
-                fruit_name = fruit.name,
-                fruit_type = fruit.type,
-                fruit_certainty = fruit.certainty,
-                quality = quality.quality,
-                quality_certainty = quality.certainty
+                image = image_bytes.read(),
+                name = res.name,
+                type = res.type,
+                fresh = res.fresh,
             ).save()
-        except:
+        except Exception as e:
+            logger.info("Failed to save prediction! " + str(e))
             return None
         
         return res

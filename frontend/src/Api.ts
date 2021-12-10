@@ -18,15 +18,15 @@ export interface ActiveClassifier {
 }
 
 export interface Classification {
-  fruit: {
-    name: string,
-    type: number,
-    certainty: number
-  },
-  quality: {
-    quality: number,
-    certainty: number
-  }
+  name: string,
+  type: number,
+  fresh: number,
+}
+
+export interface NewClassifier {
+  name: string,
+  labels: { [key: number]: string },
+  model_bytes: Uint8Array
 }
 
 export const classifiers =
@@ -48,5 +48,15 @@ export const set_active_classifier =
 export const classify =
   async (img_data: Uint8Array): Promise<Classification | null> =>
     await Api.put('/user/classify', img_data, { headers: { 'Content-Type': 'image' } }).then(({data}) => data as Classification).catch(() => null)
+
+export const upload_classifier =
+  async (classifier: NewClassifier): Promise<Boolean> => {
+    const data = new FormData()
+    data.append("model_bytes", new Blob([classifier.model_bytes.buffer]))
+    data.append("name", new Blob([classifier.name], { type: 'text/plain'}))
+    data.append("labels", new Blob([JSON.stringify(classifier.labels)], { type: 'application/json'}))
+
+    return await Api.post('/classifiers', data).then(() => true).catch(() => false)
+  }
 
 export default Api
