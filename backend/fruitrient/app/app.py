@@ -1,20 +1,20 @@
 import logging
 import pickle
-import falcon
-from falcon.media.base import BaseHandler
 from falcon.asgi import App
 from falcon import CORSMiddleware
 from peewee import SqliteDatabase
 from .models import ClassifierModel, TrackedClassifier, bind
+from dotenv import load_dotenv
+import os
 
 from .classification import RandomClassifier
-from .handlers import ActiveClassifierResource, AdminActions, ClassifierResource, PredictionResource, UserActions
+from .handlers import ActiveClassifierResource, ClassifierResource, NutritionResource, PredictionResource, UserActions
 
 logger = logging.getLogger(__name__)
 
 
 def create_app() -> App:
-
+    load_dotenv()
 
     db = SqliteDatabase("testing.db")
     assert db.connect(True)
@@ -71,5 +71,13 @@ def create_app() -> App:
     pred = PredictionResource()
     app.add_route('/predictions', pred)
     # TODO: by id?
+
+    key =  os.getenv("SPOONACULAR_API_KEY", "")
+    if key == "":
+        logger.info("No proper spoonacular api key found, expect failure!")
+    nutrition = NutritionResource(key)
+    app.add_route('/nutrition_facts/{ingredient}', nutrition, suffix='nutrition')
+    app.add_route('/recipes/{ingredient}', nutrition, suffix='recipes')
+
 
     return app

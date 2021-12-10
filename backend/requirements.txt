@@ -6,3 +6,5 @@ numpy
 Pillow
 joblib
 sklearn
+requests
+python-dotenv
