@@ -1115,17 +1115,17 @@
 </script>
 
 <div
-  class="grid grid-cols-1 gap-6 p-10 xl:grid-cols-12 lg:bg-base-200 rounded-box"
+  class="grid grid-cols-1 gap-6 p-10 xl:grid-cols-9 lg:bg-base-200 rounded-box"
 >
-  <div class="col-span-1 xl:col-span-12 shadow-lg">
+  <div class="col-span-1 xl:col-span-9 shadow-lg">
     <NavBar />
   </div>
   <div
-    class="col-span-1 row-span-3 shadow-lg xl:col-span-4 bg-base-100 rounded-box"
+    class="col-span-1 row-span-3 shadow-lg xl:col-span-3 bg-base-100 rounded-box"
   >
     <InfoCard />
   </div>
-  <div class="row-span-3 shadow-lg xl:col-span-4 bg-base-100 rounded-box">
+  <div class="row-span-3 shadow-lg xl:col-span-3 bg-base-100 rounded-box">
     <FileUpload
       on:fileLoaded={imageLoaded}
       title="Upload an Image"
@@ -1133,29 +1133,25 @@
       uploadText="Drop an Image, or click to select an image"
     />
   </div>
-  <div class="shadow-lg row-span-3 xl:col-span-4 bg-base-100 rounded-box">
+  <div class="shadow-lg row-span-3 xl:col-span-3 bg-base-100 rounded-box">
     <WebcamCard />
   </div>
-  <div class="col-span-1 row-span-1 shadow-lg xl:col-span-8 rounded-box">
+  <div class="col-span-1 row-span-1 shadow-lg xl:col-span-6 rounded-box">
     <CapturedImageCard {imgSrc} {mlResponse} />
   </div>
   <div
-    class="shadow-lg row-span-2  xl:col-span-4 bg-base-100  rounded-box max-h-[49rem]  overflow-y-auto"
+    class="shadow-lg row-span-2  xl:col-span-3 bg-base-100  rounded-box max-h-[49rem]  overflow-y-auto"
   >
     <NutritionCard />
   </div>
-  <div class="col-span-1 row-span-1 shadow-lg xl:col-span-8 rounded-box">
-    <CapturedImageCard {imgSrc} {mlResponse} />
-  </div>
-  <div class="card col-span-1 xl:col-span-12 shadow-xl rounded-box flex justify-center items-center">
-    <h1 class="p-5 text-5xl card-title">Recipes</h1>
-  </div>
-  {#each recipes as recipe}
-    <Link
-      to={`/recipe/${recipe.id}`}
-      class="shadow-lg xl:col-span-3 bg-base-100 rounded-box"
-    >
-      <RecipeCard {recipe} />
-    </Link>
+  {#each recipes as recipe, i}
+    {#if i < 3}
+      <Link
+        to={`/recipe/${recipe.id}`}
+        class="shadow-lg xl:col-span-2 bg-base-100 rounded-box"
+      >
+        <RecipeCard {recipe} />
+      </Link>
+    {/if}
   {/each}
 </div>
