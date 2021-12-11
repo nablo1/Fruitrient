@@ -59,4 +59,10 @@ export const upload_classifier =
     return await Api.post('/classifiers', data).then(() => true).catch(() => false)
   }
 
+export const nutrition_facts = async (ingredient: string): Promise<object | null> =>
+  await Api.get(`/nutrition_facts/${ingredient.replace(' ', '%20')}`).then(({data}) => data).catch(() => null)
+
+export const recipes_with_ingredient = async (ingredient: string): Promise<object | null> =>
+  await Api.get(`/recipes/${ingredient.replace(' ', '%20')}`).then(({data}) => data).catch(() => null)
+
 export default Api
