@@ -70,6 +70,8 @@ def create_app() -> App:
 
     pred = PredictionResource()
     app.add_route('/predictions', pred)
+    app.add_route('/predictions/{id}/image', pred, suffix="image")
+
     # TODO: by id?
 
     key =  os.getenv("SPOONACULAR_API_KEY", "")
