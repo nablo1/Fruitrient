@@ -3,7 +3,7 @@ import io
 import logging
 import pickle
 from typing import Optional
-from peewee import Model, BlobField, DateTimeField, FloatField, AutoField, IntegerField, CharField, ForeignKeyField, Database
+from peewee import BooleanField, Model, BlobField, DateTimeField, FloatField, AutoField, IntegerField, CharField, ForeignKeyField, Database
 
 
 from .classification import Classifier, Image, PredictionRes 
@@ -42,13 +42,19 @@ class PredictionModel(Model):
     image = BlobField()
     name = CharField()
     type = IntegerField()
-    fresh = FloatField()
+    fresh = BooleanField()
 
 class PredictionModelExt:
     def iter():
         return PredictionModel \
                 .select(PredictionModel) \
                 .order_by(PredictionModel.id)
+    
+    def get(idx: int) -> Optional[PredictionModel]:
+        try:
+            return PredictionModel.get_by_id(idx)
+        except:
+            return None
 
 class ClassifierHistoryModel(Model):
     id = AutoField()

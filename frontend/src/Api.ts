@@ -1,7 +1,8 @@
 import axios from 'axios'
 
+const ApiUrl = 'http://localhost:8000'
 const Api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: ApiUrl,
 })
 
 export interface Classifier {
@@ -27,6 +28,13 @@ export interface NewClassifier {
   name: string,
   labels: { [key: number]: string },
   model_bytes: Uint8Array
+}
+
+export interface Prediction {
+  id: number,
+  name: string,
+  type: number,
+  fresh: boolean
 }
 
 export const classifiers =
@@ -64,5 +72,11 @@ export const nutrition_facts = async (ingredient: string): Promise<object | null
 
 export const recipes_with_ingredient = async (ingredient: string): Promise<object | null> =>
   await Api.get(`/recipes/${ingredient.replace(' ', '%20')}`).then(({data}) => data).catch(() => null)
+
+const prediction_image_url = (id: number) => `${ApiUrl}/predictions/${id}/image`
+
+export const predictions = async (): Promise<Prediction[]> =>
+  await Api.get('/predictions').then(({data}) => data.map((data: Prediction) => { return {...data, image: prediction_image_url(data.id)}})).catch(() => [])
+
 
 export default Api

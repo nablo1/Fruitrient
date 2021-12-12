@@ -32,6 +32,7 @@ def active_classifier_to_dict(h: ClassifierHistoryModel):
 
 def prediction_to_dict(p: PredictionModel):
     return {
+        "id": p.id,
         "name": p.name,
         "type": p.type,
         "fresh": p.fresh,
@@ -162,6 +163,16 @@ class PredictionResource:
 
         resp.text = json.dumps(ret)
         resp.status = falcon.HTTP_200
+    
+    async def on_get_image(self, _: Request, resp: Response, id) -> None:
+        
+        image = PredictionModelExt.get(id)
+        if image == None:
+            resp.status = falcon.HTTP_404
+            return
+        
+        resp.data = image.image
+        resp.status = falcon.HTTP_202
 
 class NutritionResource:
     api_key: str
@@ -225,5 +236,6 @@ class NutritionResource:
         
         resp.status = falcon.HTTP_200
         resp.text = json.dumps(ret)
+        resp.content_type = "image/png"
 
     
