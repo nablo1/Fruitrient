@@ -36,6 +36,7 @@ export interface Prediction {
   name: string
   type: number
   fresh: boolean
+  image?: string
 }
 
 export const classifiers = async (): Promise<Classifier[]> =>

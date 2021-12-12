@@ -13,33 +13,51 @@
     Classification,
     classify,
     nutrition_facts,
+    Prediction,
+    predictions,
     recipes_with_ingredient,
   } from '../Api'
   import { Link } from 'svelte-navigator'
   import { onMount } from 'svelte'
   import { NutritionFact, RecipesWithIngredient } from '../types'
 
-  let imgSrc: string
+  let imgSrc: string | undefined
   let mlResponse: Classification | null
   let nutration: NutritionFact | null
-  let recipes: RecipesWithIngredient[]
+  let recipes: RecipesWithIngredient[] | null
+  let lastPredection: Prediction[]
+
   const imageLoaded = async (data: CustomEvent) => {
-    console.log(data.detail.binary)
     mlResponse = await classify(new Uint8Array(data.detail.binary))
-    console.log(mlResponse)
     imgSrc = data.detail.imaSrc
+    //! uncomment before deploy
+
+    // const nutritionFacts = await nutrition_facts(
+    //   lastPredection[0]?.name || 'apple'
+    // )
+    // recipes = await recipes_with_ingredient(lastPredection[0]?.name || 'apple')
+    // nutration = nutritionFacts!.nutrition
+
+    // recipeStore.update((prevData) => {
+    //   if (recipes && recipes.length) return [...prevData, ...recipes]
+    //   return prevData
+    // })
   }
 
   onMount(async () => {
-    console.log('something')
-    // const response = await nutrition_facts('apple')
-    // nutration = response!.nutrition
-    recipes = (await recipes_with_ingredient(
-      'apple'
-    )) as RecipesWithIngredient[]
+    lastPredection = await predictions()
+    //! uncomment before deploy
+    // imgSrc = lastPredection[0]?.image
+    // const nutritionFacts = await nutrition_facts(
+    //   lastPredection[0]?.name || 'apple'
+    // )
+    // recipes = await recipes_with_ingredient(lastPredection[0]?.name || 'apple')
+    // nutration = nutritionFacts!.nutrition
 
-    if (recipes && recipes.length)
-      recipeStore.update((prevData) => [...prevData, ...recipes])
+    // recipeStore.update((prevData) => {
+    //   if (recipes && recipes.length) return [...prevData, ...recipes]
+    //   return prevData
+    // })
   })
 </script>
 
@@ -71,9 +89,9 @@
   <div
     class="shadow-lg row-span-2  xl:col-span-3 bg-base-100  rounded-box max-h-[49rem]  overflow-y-auto"
   >
-    <!-- {#if nutration}
+    {#if nutration}
       <NutritionCard {nutration} />
-    {/if} -->
+    {/if}
   </div>
   {#if recipes && recipes.length}
     {#each recipes as recipe}
