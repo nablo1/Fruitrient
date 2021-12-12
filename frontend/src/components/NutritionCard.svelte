@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let nutration: any = undefined
+  import { Nutrition } from '../types'
+
+  export let nutration: Nutrition
 </script>
 
 <div class="card text-base-content text-opacity-40 rounded-box">
@@ -18,45 +20,43 @@
           <tr>
             <th>1</th>
             <td class="capitalize">calories</td>
-            <td class="capitalize">{nutration.calories}</td>
+            <td class="capitalize">{nutration.caloricBreakdown.percentCarbs}</td
+            >
           </tr>
           <tr>
             <th>2</th>
-            <td class="capitalize">carbs</td>
-            <td class="capitalize">{nutration.carbs}</td>
+            <td class="capitalize">fat</td>
+            <td class="capitalize">{nutration.caloricBreakdown.percentFat}</td>
           </tr>
           <tr>
             <th>3</th>
-            <td class="capitalize">fat</td>
-            <td class="capitalize">{nutration.fat}</td>
-          </tr>
-          <tr>
-            <th>4</th>
             <td class="capitalize">protein</td>
-            <td class="capitalize">{nutration.protein}</td>
+            <td class="capitalize"
+              >{nutration.caloricBreakdown.percentProtein}</td
+            >
           </tr>
           <tr class="active">
-            <th class="capitalize">good nutrients</th>
+            <th class="capitalize">nutrients</th>
             <td class="capitalize" />
             <td class="capitalize" />
           </tr>
-          {#each nutration.good as good, i}
+          {#each nutration.nutrients as e, i}
             <tr>
-              <th>{i + 5}</th>
-              <td class="capitalize">{good.title}</td>
-              <td class="capitalize">{good.amount}</td>
+              <th>{i + 4}</th>
+              <td class="capitalize">{e.title}</td>
+              <td class="capitalize">{e.amount}{e.unit}</td>
             </tr>
           {/each}
           <tr class="active rounded">
-            <th class="capitalize">bad nutrients</th>
+            <th class="capitalize">flavonoids</th>
             <td class="capitalize" />
             <td class="capitalize" />
           </tr>
-          {#each nutration.bad as bad, i}
+          {#each nutration.flavonoids as e, i}
             <tr>
-              <th>{i + nutration.good.length + 5}</th>
-              <td class="capitalize">{bad.title}</td>
-              <td class="capitalize">{bad.amount}</td>
+              <th>{i + nutration.nutrients.length + 4}</th>
+              <td class="capitalize">{e.title}</td>
+              <td class="capitalize">{e.amount}{e.unit}</td>
             </tr>
           {/each}
         </tbody>
