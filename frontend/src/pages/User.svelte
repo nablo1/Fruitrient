@@ -19,7 +19,186 @@
     console.log(mlResponse)
     imgSrc = data.detail.imaSrc
   }
-
+  const nutration = {
+    calories: '258k',
+    carbs: '33g',
+    fat: '11g',
+    protein: '7g',
+    bad: [
+      {
+        title: 'Calories',
+        amount: '258k',
+        indented: false,
+        percentOfDailyNeeds: 12.9,
+      },
+      {
+        title: 'Fat',
+        amount: '11g',
+        indented: false,
+        percentOfDailyNeeds: 18.18,
+      },
+      {
+        title: 'Saturated Fat',
+        amount: '2g',
+        indented: true,
+        percentOfDailyNeeds: 17.08,
+      },
+      {
+        title: 'Carbohydrates',
+        amount: '33g',
+        indented: false,
+        percentOfDailyNeeds: 11.05,
+      },
+      {
+        title: 'Sugar',
+        amount: '22g',
+        indented: true,
+        percentOfDailyNeeds: 25.34,
+      },
+      {
+        title: 'Cholesterol',
+        amount: '4mg',
+        indented: false,
+        percentOfDailyNeeds: 1.45,
+      },
+      {
+        title: 'Sodium',
+        amount: '465mg',
+        indented: false,
+        percentOfDailyNeeds: 20.23,
+      },
+    ],
+    good: [
+      {
+        title: 'Protein',
+        amount: '7g',
+        indented: false,
+        percentOfDailyNeeds: 15.15,
+      },
+      {
+        title: 'Vitamin C',
+        amount: '112mg',
+        indented: false,
+        percentOfDailyNeeds: 136.27,
+      },
+      {
+        title: 'Folate',
+        amount: '343µg',
+        indented: false,
+        percentOfDailyNeeds: 85.79,
+      },
+      {
+        title: 'Vitamin A',
+        amount: '2769IU',
+        indented: false,
+        percentOfDailyNeeds: 55.39,
+      },
+      {
+        title: 'Manganese',
+        amount: '1mg',
+        indented: false,
+        percentOfDailyNeeds: 54,
+      },
+      {
+        title: 'Fiber',
+        amount: '10g',
+        indented: false,
+        percentOfDailyNeeds: 40.49,
+      },
+      {
+        title: 'Potassium',
+        amount: '1121mg',
+        indented: false,
+        percentOfDailyNeeds: 32.06,
+      },
+      {
+        title: 'Vitamin B6',
+        amount: '0.48mg',
+        indented: false,
+        percentOfDailyNeeds: 23.84,
+      },
+      {
+        title: 'Magnesium',
+        amount: '82mg',
+        indented: false,
+        percentOfDailyNeeds: 20.62,
+      },
+      {
+        title: 'Vitamin E',
+        amount: '2mg',
+        indented: false,
+        percentOfDailyNeeds: 18.17,
+      },
+      {
+        title: 'Iron',
+        amount: '3mg',
+        indented: false,
+        percentOfDailyNeeds: 17.44,
+      },
+      {
+        title: 'Vitamin K',
+        amount: '18µg',
+        indented: false,
+        percentOfDailyNeeds: 17.21,
+      },
+      {
+        title: 'Phosphorus',
+        amount: '167mg',
+        indented: false,
+        percentOfDailyNeeds: 16.79,
+      },
+      {
+        title: 'Copper',
+        amount: '0.31mg',
+        indented: false,
+        percentOfDailyNeeds: 15.71,
+      },
+      {
+        title: 'Vitamin B2',
+        amount: '0.24mg',
+        indented: false,
+        percentOfDailyNeeds: 14.08,
+      },
+      {
+        title: 'Vitamin B1',
+        amount: '0.16mg',
+        indented: false,
+        percentOfDailyNeeds: 10.83,
+      },
+      {
+        title: 'Vitamin B3',
+        amount: '1mg',
+        indented: false,
+        percentOfDailyNeeds: 9.55,
+      },
+      {
+        title: 'Zinc',
+        amount: '1mg',
+        indented: false,
+        percentOfDailyNeeds: 8.85,
+      },
+      {
+        title: 'Vitamin B5',
+        amount: '0.8mg',
+        indented: false,
+        percentOfDailyNeeds: 8.03,
+      },
+      {
+        title: 'Calcium',
+        amount: '76mg',
+        indented: false,
+        percentOfDailyNeeds: 7.69,
+      },
+      {
+        title: 'Selenium',
+        amount: '3µg',
+        indented: false,
+        percentOfDailyNeeds: 4.29,
+      },
+    ],
+    expires: 1635711338435,
+    isStale: true,
+  }
   const recipes = [
     {
       id: 73420,
@@ -1143,7 +1322,7 @@
   <div
     class="shadow-lg row-span-2  xl:col-span-3 bg-base-100  rounded-box max-h-[49rem]  overflow-y-auto"
   >
-    <NutritionCard />
+    <NutritionCard {nutration} />
   </div>
   {#each recipes as recipe, i}
     {#if i < 3}
