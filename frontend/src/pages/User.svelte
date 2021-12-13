@@ -44,6 +44,11 @@
     // })
   }
 
+  const webcamUpload = async (data: CustomEvent) => {
+    mlResponse = await classify(data.detail.binary)
+    imgSrc = data.detail.imaSrc
+  }
+
   onMount(async () => {
     lastPredection = await predictions()
     //! uncomment before deploy
@@ -81,7 +86,7 @@
     />
   </div>
   <div class="shadow-lg row-span-3 xl:col-span-3 bg-base-100 rounded-box">
-    <WebcamCard />
+    <WebcamCard on:fileLoaded={webcamUpload} />
   </div>
   <div class="col-span-1 row-span-1 shadow-lg xl:col-span-6 rounded-box">
     <CapturedImageCard {imgSrc} {mlResponse} />
