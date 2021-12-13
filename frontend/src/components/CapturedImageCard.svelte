@@ -36,7 +36,7 @@
           <span>{mlResponse?.fresh}</span>
         </div>
       {:else}
-        <p class="">Please Upload An Image to be calssifed</p>
+        <p>Please Upload An Image to Classify</p>
       {/if}
     </div>
   </div>
