@@ -113,4 +113,9 @@ export const predictions = async (): Promise<Prediction[]> =>
     )
     .catch(() => [])
 
+export const tryRetrainModel = async (modelId: string): Promise<any> =>
+  await Api.post('/retrain', { modelId })
+    .then(({ data }) => data)
+    .catch(() => null)
+
 export default Api

@@ -12,16 +12,22 @@
     Classifier,
     classifiers,
     set_active_classifier,
+    tryRetrainModel,
   } from '../Api'
   import { onMount } from 'svelte'
+  import RetrainModel from '../components/RetrainModel.svelte'
+  import FileUploadWithForm from '../components/FileUploadWithForm.svelte'
 
   const titleOne = 'Currently being used'
   const titleTwo = 'Accuracy'
-  const textOne = 'V.5'
-  const textTwo = '69,69%'
+
   let mlVersions = [] as Classifier[]
   let activeMlHistory = [] as ActiveClassifier[]
   let activeMl = null as ActiveClassifier | null
+  let loading = false
+  let currModelId = ''
+  let currModelAccurcy = ''
+  let retrainModelResponse = true
 
   let testing: any = undefined
 
@@ -48,9 +54,29 @@
     activeMlHistory = await active_classifier_history()
 
     testing = activeMl
+    currModelId = activeMl ? activeMl.classifier.name : ''
+    currModelAccurcy = activeMl ? activeMl.classifier.performance + '%' : ''
   })
 
   const fileLoaded = async (data: CustomEvent) => {
+    console.log(data.detail)
+  }
+
+  const retrainModel = async () => {
+    loading = true
+    retrainModelResponse = await tryRetrainModel(currModelId)
+    loading = false
+  }
+
+  const handleDismiss = (data: CustomEvent) => {
+    console.log(data.detail)
+  }
+
+  const handleOnKeep = (data: CustomEvent) => {
+    console.log(data.detail)
+  }
+
+  const handleFileUpload = (data: CustomEvent) => {
     console.log(data.detail)
   }
 </script>
@@ -83,12 +109,15 @@
       {titleTwo}
     />
   </div>
-  <div class="row-span-3 shadow-lg bg-base-100 rounded-box">
-    <FileUpload
-      on:fileLoaded={fileLoaded}
-      fileType="*"
-      title="Upload a file"
-      uploadText="Drop a file, or click to select a file"
+  <div class="row-span-2 shadow-lg bg-base-100 rounded-box">
+    <RetrainModel
+      {loading}
+      {retrainModelResponse}
+      modelId={currModelId}
+      accurcy={currModelAccurcy}
+      on:retrain={retrainModel}
+      on:onDismiss={handleDismiss}
+      on:onKeep={handleOnKeep}
     />
   </div>
   <div class="shadow-lg rounded-box">
@@ -114,5 +143,16 @@
         data={mlVersions.map((el) => el.performance)}
       />
     </div>
+  </div>
+  <div class="row-span-2 shadow-lg bg-base-100 rounded-box">
+    <FileUpload
+      on:fileLoaded={fileLoaded}
+      fileType="*"
+      title="Upload a file"
+      uploadText="Drop a file, or click to select a file"
+    />
+  </div>
+  <div class="col-span-1 row-span-1 shadow-lg xl:col-span-2 rounded-box">
+    <FileUploadWithForm on:fileUpload={handleFileUpload} />
   </div>
 </div>
