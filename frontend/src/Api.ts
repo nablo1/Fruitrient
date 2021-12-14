@@ -40,11 +40,11 @@ export interface PerfCheckData {
 }
 
 export interface PerfCheckResult {
-  results: {
+  results: [{
     result: Prediction,
     is_correct: boolean,
     expected: number
-  },
+  }],
   total_correct: number,
   total_incorrect: number
 }
@@ -128,7 +128,7 @@ export const tryRetrainModel = async (modelId: string): Promise<any> =>
     .then(({ data }) => data)
     .catch(() => null)
 
-export const check_perf = async (classifier_id: number, { labels, data }: PerfCheckData): Promise<any> => {
+export const check_perf = async (classifier_id: number, { labels, data }: PerfCheckData): Promise<PerfCheckResult | null> => {
   if (labels.length != data.length) {
     console.log("THIS DOESNT WORK")
     return null
