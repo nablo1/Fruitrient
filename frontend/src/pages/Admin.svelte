@@ -18,6 +18,7 @@
   import { onMount } from 'svelte'
   import RetrainModel from '../components/RetrainModel.svelte'
   import FileUploadWithForm from '../components/FileUploadWithForm.svelte'
+  import Result from '../components/Result.svelte'
 
   const titleOne = 'Currently being used'
   const titleTwo = 'Accuracy'
@@ -29,6 +30,7 @@
   let currModelId = ''
   let currModelAccurcy = ''
   let retrainModelResponse = true
+  let results = null as any
 
   let testing: any = undefined
 
@@ -78,8 +80,7 @@
   }
 
   const handleFileUpload = async (data: CustomEvent) => {
-    console.log(data.detail)
-    console.log(await check_perf(activeMlHistory[0].classifier.id, data.detail))
+    results = await check_perf(data.detail.mlVersion, data.detail.data)
   }
 </script>
 
@@ -155,6 +156,10 @@
     />
   </div>
   <div class="col-span-1 row-span-1 shadow-lg xl:col-span-2 rounded-box">
-    <FileUploadWithForm on:fileUpload={handleFileUpload} />
+    {#if !results}
+      <FileUploadWithForm {mlVersions} on:fileUpload={handleFileUpload} />
+    {:else}
+    <Result {results} on:onClose={() => results = null} />
+    {/if}
   </div>
 </div>

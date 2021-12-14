@@ -1,6 +1,7 @@
 <script lang="ts">
   import Dropzone from 'svelte-file-dropzone'
   import { createEventDispatcher } from 'svelte'
+  import { Classifier } from '../Api'
 
   let progress = false
   let accFiles: any[] = []
@@ -8,6 +9,8 @@
   let filesByteArray: Promise<Uint8Array>[][] = []
   let labels: string[] = []
   let name: string = ''
+  export let mlVersions: Classifier[]
+  let selected: any
 
   const dispatch = createEventDispatcher()
   const handleFilesSelect = (e: any) => {
@@ -47,7 +50,7 @@
       i += 1
     }
 
-    dispatch('fileUpload', { labels: lbls, data: acc })
+    dispatch('fileUpload', {data: { labels: lbls, data: acc}, mlVersion: selected })
   }
 </script>
 
@@ -77,21 +80,18 @@
           <div class="form-control mb-2">
             <label for="dataLabel" class="input-group input-group-xs">
               <span>ML</span>
-              <input
-                required
-                id="dataName"
-                type="text"
-                placeholder="Name"
-                class="input input-bordered input-xs w-full ml-2 mr-5"
-                bind:value={name}
-              />
+              <select bind:value={selected} class="select select-bordered select-xs w-full max-w-xs mx-2">
+                {#each mlVersions as option}
+                  <option value={option.id} >{option.name}</option>
+                {/each}
+              </select>
             </label>
           </div>
           <p class="text-xl mb-2">Labels</p>
           {#each labels as file, i}
             <div class="form-control mb-2">
               <label for="dataLabel" class="input-group input-group-xs">
-                <span>({filesByteArray[i].length})</span>
+                <span>{filesByteArray[i].length}</span>
                 <input
                   required
                   id={'dataLabel' + i}
