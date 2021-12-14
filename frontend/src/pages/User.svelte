@@ -45,7 +45,7 @@
   }
 
   const webcamUpload = async (data: CustomEvent) => {
-    mlResponse = await classify(data.detail.binary)
+    mlResponse = await classify(new Uint8Array(data.detail.binary))
     imgSrc = data.detail.imaSrc
   }
 
