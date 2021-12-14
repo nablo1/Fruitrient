@@ -53,9 +53,9 @@ async def collect_form(form):
     return media
 
 class UserActions:
-    classifier: Classifier
+    classifier: TrackedClassifier
 
-    def __init__(self, classifier: Classifier) -> None:
+    def __init__(self, classifier: TrackedClassifier) -> None:
         self.classifier = classifier
 
     async def on_put(self, req: Request, resp: Response) -> None:

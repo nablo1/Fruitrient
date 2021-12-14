@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { decode } from 'base64-arraybuffer'
 
-  let stream
-  let video
-  let canvas
-  let url
+  let stream: MediaStream | null = null
+  let video: HTMLVideoElement
+  let canvas: HTMLCanvasElement
+  let url: string | null = null
 
   const dispatch = createEventDispatcher()
 
@@ -22,7 +22,7 @@
   const captureImage = () => {
     canvas.width = video.videoWidth
     canvas.height = video.videoHeight
-    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+    canvas.getContext('2d')!.drawImage(video, 0, 0, canvas.width, canvas.height)
     url = canvas.toDataURL('image/jpeg')
     closeWebcam()
   }
@@ -32,7 +32,14 @@
   }
 
   const uploadImage = () => {
-    const byteArray = decode(url)
+    if (!url) {
+      console.log('error: no data url to upload')
+      return
+    }
+
+    const base64 = url.substring(url.indexOf(',') + 1)
+
+    const byteArray = decode(base64)
     if (url) {
       dispatch('fileLoaded', {
         binary: byteArray,
@@ -43,7 +50,7 @@
   }
 
   const closeWebcam = async () => {
-    stream.getTracks().forEach(function (track) {
+    stream?.getTracks().forEach(function (track) {
       if (track.readyState == 'live') {
         track.stop()
       }
