@@ -19,12 +19,6 @@ export interface ActiveClassifier {
   selected_date: string
 }
 
-export interface Classification {
-  name: string
-  type: number
-  fresh: number
-}
-
 export interface NewClassifier {
   name: string
   labels: { [key: number]: string }
@@ -65,11 +59,11 @@ export const set_active_classifier = async (
 
 export const classify = async (
   img_data: Uint8Array
-): Promise<Classification | null> =>
+): Promise<Prediction | null> =>
   await Api.put('/user/classify', img_data, {
     headers: { 'Content-Type': 'image' },
   })
-    .then(({ data }) => data as Classification)
+    .then(({ data }) => data as Prediction)
     .catch(() => null)
 
 export const upload_classifier = async (
