@@ -1,38 +1,53 @@
-<script>
+<script lang="ts">
   import Dropzone from 'svelte-file-dropzone'
   import { createEventDispatcher } from 'svelte'
 
   let progress = false
-  let accFiles = []
-  let rejFiles = []
-  let filesByteArray
-  const labels = {}
-  let name
+  let accFiles: any[] = []
+  let rejFiles: any[] = []
+  let filesByteArray: Promise<Uint8Array>[][] = []
+  let labels: string[] = []
+  let name: string = ''
 
   const dispatch = createEventDispatcher()
-  const handleFilesSelect = (e) => {
+  const handleFilesSelect = (e: any) => {
     const { acceptedFiles, fileRejections } = e.detail
-    accFiles = acceptedFiles
-    rejFiles = fileRejections
-    acceptedFiles.forEach((e, i) => {
-      labels[i] = ''
-    })
-    console.log('accFiles', { rejFiles, rejFiles })
-    const reader = new FileReader()
-    if (acceptedFiles.length) {
-      reader.readAsArrayBuffer(acceptedFiles[0])
-      reader.onload = () => (progress = true)
-      reader.onloadend = (evt) => {
-        if (evt.target.readyState === FileReader.DONE) {
-          filesByteArray = new Uint8Array(evt.target.result)
-          progress = false
-        }
-      }
-    }
+    accFiles = [...accFiles, ...acceptedFiles]
+    rejFiles = [...rejFiles, ...fileRejections]
+    labels = [...labels, '']
+    console.log('accFiles', { accFiles, rejFiles })
+
+    filesByteArray = [
+      ...filesByteArray,
+      acceptedFiles.map(
+        (fil: any) =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.readAsArrayBuffer(fil)
+            reader.onerror = () => reject()
+            reader.onloadend = (evt: any) => {
+              if (evt.target.readyState === FileReader.DONE) {
+                resolve(new Uint8Array(evt.target.result))
+                progress = false
+              }
+            }
+          })
+      ),
+    ]
   }
 
-  const handleSubmit = () => {
-    dispatch('fileUpload', { name, labels, model_bytes: filesByteArray })
+  const handleSubmit = async () => {
+    let acc: Uint8Array[] = []
+    const lbls: number[] = []
+    let i = 0
+    for (const file of filesByteArray) {
+      const bytes = await Promise.all(file)
+      bytes.forEach(() => lbls.push((labels[i] as any as number) + 0))
+      acc = [...acc, ...bytes]
+      i += 1
+    }
+
+    dispatch('fileUpload', { labels: lbls, data: acc })
   }
 </script>
 
@@ -42,8 +57,8 @@
       <Dropzone
         on:drop={handleFilesSelect}
         minSize={1}
-        accept="image/png"
-        multiple={false}
+        accept="image/*"
+        multiple={true}
         disableDefaultStyles={false}
         containerClasses="w-full rounded-box h-full justify-center"
       >
@@ -73,14 +88,14 @@
             </label>
           </div>
           <p class="text-xl mb-2">Labels</p>
-          {#each accFiles as file, i}
+          {#each labels as file, i}
             <div class="form-control mb-2">
               <label for="dataLabel" class="input-group input-group-xs">
-                <span>{i}</span>
+                <span>({filesByteArray[i].length})</span>
                 <input
                   required
                   id={'dataLabel' + i}
-                  type="text"
+                  type="number"
                   placeholder="Label"
                   class="input input-bordered input-xs w-full mx-5"
                   bind:value={labels[i]}

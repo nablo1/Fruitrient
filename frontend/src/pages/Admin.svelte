@@ -9,6 +9,7 @@
     ActiveClassifier,
     active_classifier,
     active_classifier_history,
+    check_perf,
     Classifier,
     classifiers,
     set_active_classifier,
@@ -76,8 +77,9 @@
     console.log(data.detail)
   }
 
-  const handleFileUpload = (data: CustomEvent) => {
+  const handleFileUpload = async (data: CustomEvent) => {
     console.log(data.detail)
+    console.log(await check_perf(activeMlHistory[0].classifier.id, data.detail))
   }
 </script>
 
