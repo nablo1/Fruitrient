@@ -134,8 +134,8 @@ class ClassifierResource:
             pyobj = SciKitClassifier(pyobj, labels)
 
         ClassifierModel(
-            name = media["name"],
-            performance = 0,
+            name = media["meta"]["name"],
+            performance = media["meta"]["performance"],
             model_bytes = pickle.dumps(pyobj)
         ).save()
 

@@ -10,7 +10,6 @@
   import recipeStore from '../store/store'
 
   import {
-    Classification,
     classify,
     nutrition_facts,
     Prediction,
@@ -22,7 +21,7 @@
   import { NutritionFact, RecipesWithIngredient } from '../types'
 
   let imgSrc: string | undefined
-  let mlResponse: Classification | null
+  let mlResponse: Prediction | null
   let nutration: NutritionFact | null
   let recipes: RecipesWithIngredient[] | null
   let lastPredection: Prediction[]

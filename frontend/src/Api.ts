@@ -22,6 +22,7 @@ export interface ActiveClassifier {
 export interface NewClassifier {
   name: string
   labels: { [key: number]: string }
+  performance: number,
   model_bytes: Uint8Array
 }
 
@@ -67,14 +68,14 @@ export const classify = async (
     .catch(() => null)
 
 export const upload_classifier = async (
-  classifier: NewClassifier
+  { model_bytes, performance, name, labels }: NewClassifier
 ): Promise<Boolean> => {
   const data = new FormData()
-  data.append('model_bytes', new Blob([classifier.model_bytes.buffer]))
-  data.append('name', new Blob([classifier.name], { type: 'text/plain' }))
+  data.append('model_bytes', new Blob([model_bytes.buffer]))
+  data.append('meta', new Blob([JSON.stringify({ name, performance })], { type: 'application/json' }))
   data.append(
     'labels',
-    new Blob([JSON.stringify(classifier.labels)], { type: 'application/json' })
+    new Blob([JSON.stringify(labels)], { type: 'application/json' })
   )
 
   return await Api.post('/classifiers', data)
