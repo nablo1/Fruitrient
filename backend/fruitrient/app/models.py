@@ -105,9 +105,9 @@ def bind(db: Database):
     db.create_tables(models)
 
 
-class TrackedClassifier(Classifier):
+class TrackedClassifier:
 
-    def classify(self, image: Image) -> Optional[PredictionRes]:
+    def classify(self, image: Image) -> Optional[PredictionModel]:
 
         # We're effectively polling the active classifier,
         # since we don't own the backing storage it's considered volatile.
@@ -128,15 +128,17 @@ class TrackedClassifier(Classifier):
             image_bytes = io.BytesIO()
             image.save(image_bytes, format='png')
             image_bytes.seek(0)
-            PredictionModel(
+            ret = PredictionModel(
                 predicted_by = classifier.classifier.id,
                 image = image_bytes.read(),
                 name = res.name,
                 type = res.type,
                 fresh = res.fresh,
-            ).save()
+            )
+            
+            ret.save()
+
+            return ret
         except Exception as e:
             logger.info("Failed to save prediction! " + str(e))
             return None
-        
-        return res
