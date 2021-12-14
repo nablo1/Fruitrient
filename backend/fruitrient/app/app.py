@@ -25,22 +25,31 @@ def create_app() -> App:
         nice = ClassifierModel.get()
     except Exception:
         logger.info("No classifier found, creating a dummy!")
+
+        labels = {
+            0: "freshApple",
+            1: "freshBanana",
+            2: "freshOrange",
+            3: "rottenApple",
+            4: "rottenBanana",
+            5: "rottenOrange"
+        }
         nice = ClassifierModel(
             name = "Default - Random",
-            model_bytes = pickle.dumps(RandomClassifier()),
+            model_bytes = pickle.dumps(RandomClassifier(labels)),
             performance = 0
         )
         nice.save()
 
         ClassifierModel(
             name = "Default - Random 2",
-            model_bytes = pickle.dumps(RandomClassifier()),
+            model_bytes = pickle.dumps(RandomClassifier(labels)),
             performance = 0
         ).save()
 
         ClassifierModel(
             name = "Default - Random 3",
-            model_bytes = pickle.dumps(RandomClassifier()),
+            model_bytes = pickle.dumps(RandomClassifier(labels)),
             performance = 0
         ).save()
 

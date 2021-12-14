@@ -7,11 +7,12 @@ import io
 import joblib
 import requests
 from PIL import Image
+import h5py
 
 from .app import TrackedClassifier
 from .models import ClassifierHistoryModel, ClassifierHistoryModelExt, ClassifierModel, ClassifierModelExt, PredictionModel, PredictionModelExt
 
-from .classification import Classifier, SciKitClassifier
+from .classification import Classifier, KerasClassifier, SciKitClassifier
 
 logger = logging.getLogger(__name__)
 
@@ -121,14 +122,25 @@ class ClassifierResource:
 
         bits = media["model_bytes"]
 
-        # Try loading up the pickled object
-        try:
-            pyobj = pickle.loads(bits)
-        except:
-            pyobj = joblib.load(io.BytesIO(bits))
+        pyobj = None
+
+        try: pyobj = pickle.loads(bits)
+        except: pass
+        
+        if pyobj == None:
+            try: pyobj = joblib.load(io.BytesIO(bits))
+            except: pass
+
+        if pyobj == None:
+            try: 
+                pyobj = KerasClassifier(bits, media["labels"])
+                logger.info("created new Keras Model!")
+            except Exception as e:
+                logger.info(e)
+                pass
 
         # We're just going to assume the file is from SciKit
-        if not issubclass(type(pyobj), Classifier):
+        if pyobj == None or not issubclass(type(pyobj), Classifier):
             logger.info("redumping SciKit Classifier")
             labels = media["labels"]
             pyobj = SciKitClassifier(pyobj, labels)
