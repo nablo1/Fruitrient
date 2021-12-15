@@ -1,6 +1,5 @@
 <script lang="ts">
   import Chart from '../components/Chart.svelte'
-  import FileUpload from '../components/FileUpload.svelte'
   import NavBar from '../components/NavBar.svelte'
   import SelectCard from '../components/SelectCard.svelte'
   import SmallCard from '../components/SmallCard.svelte'
@@ -19,6 +18,7 @@
   import RetrainModel from '../components/RetrainModel.svelte'
   import FileUploadWithForm from '../components/FileUploadWithForm.svelte'
   import Result from '../components/Result.svelte'
+import ModelUpload from '../components/ModelUpload.svelte';
 
   const titleOne = 'Currently being used'
   const titleTwo = 'Accuracy'
@@ -62,7 +62,7 @@
   })
 
   const fileLoaded = async (data: CustomEvent) => {
-    console.log(data.detail)
+    console.log('data.detail', data.detail)
   }
 
   const retrainModel = async () => {
@@ -148,11 +148,8 @@
     </div>
   </div>
   <div class="row-span-2 shadow-lg bg-base-100 rounded-box">
-    <FileUpload
+    <ModelUpload
       on:fileLoaded={fileLoaded}
-      fileType="*"
-      title="Upload a file"
-      uploadText="Drop a file, or click to select a file"
     />
   </div>
   <div class="col-span-1 row-span-1 shadow-lg xl:col-span-2 rounded-box">

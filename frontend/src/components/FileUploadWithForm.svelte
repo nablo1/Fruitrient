@@ -30,8 +30,8 @@
             reader.onerror = () => reject()
             reader.onloadend = (evt: any) => {
               if (evt.target.readyState === FileReader.DONE) {
-                resolve(new Uint8Array(evt.target.result))
                 progress = false
+                resolve(new Uint8Array(evt.target.result))
               }
             }
           })
