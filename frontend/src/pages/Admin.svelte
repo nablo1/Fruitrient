@@ -11,14 +11,16 @@
     check_perf,
     Classifier,
     classifiers,
+    NewClassifier,
     set_active_classifier,
     tryRetrainModel,
+    upload_classifier,
   } from '../Api'
   import { onMount } from 'svelte'
   import RetrainModel from '../components/RetrainModel.svelte'
   import FileUploadWithForm from '../components/FileUploadWithForm.svelte'
   import Result from '../components/Result.svelte'
-import ModelUpload from '../components/ModelUpload.svelte';
+  import ModelUpload from '../components/ModelUpload.svelte'
 
   const titleOne = 'Currently being used'
   const titleTwo = 'Accuracy'
@@ -63,6 +65,8 @@ import ModelUpload from '../components/ModelUpload.svelte';
 
   const fileLoaded = async (data: CustomEvent) => {
     console.log('data.detail', data.detail)
+    const res = await upload_classifier(data.detail as NewClassifier)
+    console.log('new model upload res: ', res)
   }
 
   const retrainModel = async () => {
@@ -148,15 +152,13 @@ import ModelUpload from '../components/ModelUpload.svelte';
     </div>
   </div>
   <div class="row-span-2 shadow-lg bg-base-100 rounded-box">
-    <ModelUpload
-      on:fileLoaded={fileLoaded}
-    />
+    <ModelUpload on:fileLoaded={fileLoaded} />
   </div>
   <div class="col-span-1 row-span-1 shadow-lg xl:col-span-2 rounded-box">
     {#if !results}
       <FileUploadWithForm {mlVersions} on:fileUpload={handleFileUpload} />
     {:else}
-    <Result {results} on:onClose={() => results = null} />
+      <Result {results} on:onClose={() => (results = null)} />
     {/if}
   </div>
 </div>

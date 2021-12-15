@@ -21,7 +21,7 @@ export interface ActiveClassifier {
 
 export interface NewClassifier {
   name: string
-  labels: { [key: number]: string }
+  labels: { [key: string]: number }
   performance: number,
   model_bytes: Uint8Array
 }
@@ -33,7 +33,6 @@ export interface Prediction {
   fresh: boolean
   image?: string
 }
-
 
 export interface PerfCheckData {
   labels: number[],

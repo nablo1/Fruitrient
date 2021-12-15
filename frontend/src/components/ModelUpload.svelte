@@ -5,7 +5,7 @@
   const title = 'Upload'
   let performance = 0
   let name = null
-  let model = null
+  let model_bytes = null
   let labels = null
   let progress = false
   let accpetedFileLength = 0
@@ -26,7 +26,7 @@
         progress = false
         if (evt.target.readyState === FileReader.DONE) {
           acceptedFile = true
-          model = new Uint8Array(evt.target.result)
+          model_bytes = new Uint8Array(evt.target.result)
         }
       }
     }
@@ -52,7 +52,7 @@
 
   const handleSubmit = () => {
     if (accpetedFileLength == 2)
-      dispatch('fileLoaded', { model, performance, name, labels })
+      dispatch('fileLoaded', { model_bytes, performance, name, labels })
     console.log('Please Upload The Model Firest')
   }
 </script>
