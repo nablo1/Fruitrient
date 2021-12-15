@@ -155,11 +155,17 @@ class ActiveClassifierResource:
 class ClassifierResource:
     
     async def on_post(self, req: Request, resp: Response) -> None:
+        resp.status = 404
         media = await collect_form(await req.media)
 
         bits = media["model_bytes"]
 
         pyobj = None
+
+        labels_swap = {}
+        for k,v in media["labels"].items():
+            labels_swap[v] = k
+        labels = labels_swap
 
         try: pyobj = pickle.loads(bits)
         except: pass
@@ -170,16 +176,13 @@ class ClassifierResource:
 
         if pyobj == None:
             try: 
-                pyobj = KerasClassifier(bits, media["labels"])
+                pyobj = KerasClassifier(bits, labels)
                 logger.info("created new Keras Model!")
-            except Exception as e:
-                logger.info(e)
-                pass
+            except: pass
 
         # We're just going to assume the file is from SciKit
         if pyobj == None or not issubclass(type(pyobj), Classifier):
             logger.info("redumping SciKit Classifier")
-            labels = media["labels"]
             pyobj = SciKitClassifier(pyobj, labels)
 
         ClassifierModel(
