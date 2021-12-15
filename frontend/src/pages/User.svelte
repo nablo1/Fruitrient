@@ -21,7 +21,7 @@
   import { NutritionFact, RecipesWithIngredient } from '../types'
 
   let imgSrc: string | undefined
-  let mlResponse: Prediction | null
+  let mlResponse: any | null
   let nutration: NutritionFact | null
   let recipes: RecipesWithIngredient[] | null
   let lastPredection: Prediction[]

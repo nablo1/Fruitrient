@@ -32,7 +32,7 @@ def active_classifier_to_dict(h: ClassifierHistoryModel):
 
 def prediction_to_dict(p: PredictionModel):
     return {
-        "id": p.id,
+        "id": getattr(p, 'id', None),
         "name": p.name,
         "type": p.type,
         "fresh": p.fresh,
@@ -75,11 +75,48 @@ class UserActions:
         resp.status = falcon.HTTP_200
 
 
+
+
 class AdminActions:
     classifier: TrackedClassifier
 
     def __init__(self, classifier: TrackedClassifier) -> None:
         self.classifier = classifier  
+
+    def check_perf(classifier: Classifier, data: list[tuple[Image.Image, int]]):
+
+        result = zip(map(lambda xy: classifier.classify(xy[0]), data), map(lambda kv: kv[1] ,data))
+
+        total_correct = 0
+        acc = []
+        for res, correct_label in result:
+            iscorrect = res and res.type == correct_label
+            acc.append({
+                "result": prediction_to_dict(res),
+                "is_correct": iscorrect,
+                "expected": correct_label
+            })
+            total_correct += int(iscorrect)
+        
+        total_incorrect = len(data) - total_correct
+
+        return {"results": acc, "total_correct": total_correct, "total_incorrect": total_incorrect}
+    
+    async def on_put_check_perf(self, req: Request, resp: Response, classifier_id: int) -> None:
+        resp.status = 404
+        classifier = ClassifierModelExt.get(int(classifier_id))
+        classifier = pickle.loads(classifier.model_bytes)
+        
+        if classifier == None:
+            return
+
+        data = await collect_form(await req.media)
+        labels = data["labels"]
+        data = list(zip(map(lambda kv: kv[1], filter(lambda kv: kv[0].startswith("image"), data.items())), labels))
+        res = AdminActions.check_perf(classifier, data)
+
+        resp.status = 200
+        resp.text = json.dumps(res)
 
 class ActiveClassifierResource:
     

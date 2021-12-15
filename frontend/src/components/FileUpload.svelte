@@ -5,6 +5,7 @@
   export let fileType = '*'
   export let uploadText = 'Drop a file, or click to select a file'
   export let title = 'Upload'
+  export let multiple = false
 
   const dispatch = createEventDispatcher()
   let progress = false
@@ -34,7 +35,7 @@
       on:drop={handleFilesSelect}
       minSize={1}
       accept={fileType}
-      multiple={false}
+      {multiple}
       disableDefaultStyles={false}
       containerClasses="w-full rounded-box h-full justify-center"
     >

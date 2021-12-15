@@ -1,7 +1,7 @@
 <script lang="ts">
   export let options: any[] = []
   export let transform = (opt: any) => opt
-  export let selected: any = undefined
+  export let selected: any
 
 </script>
 

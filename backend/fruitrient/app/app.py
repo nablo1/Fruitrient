@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 from .classification import RandomClassifier
-from .handlers import ActiveClassifierResource, ClassifierResource, NutritionResource, PredictionResource, UserActions
+from .handlers import ActiveClassifierResource, AdminActions, ClassifierResource, NutritionResource, PredictionResource, UserActions
 
 logger = logging.getLogger(__name__)
 
@@ -56,8 +56,8 @@ def create_app() -> App:
     app.add_route('/user/classify', user)
 
     # TODO:
-    # admin = AdminActions(classifier)
-    # app.add_route('/admin/')
+    admin = AdminActions(classifier)
+    app.add_route('/admin/check_perf/{classifier_id}', admin, suffix='check_perf')
 
     # Resources
     passive = ClassifierResource()

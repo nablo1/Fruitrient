@@ -34,6 +34,22 @@ export interface Prediction {
   image?: string
 }
 
+
+export interface PerfCheckData {
+  labels: number[],
+  data: Uint8Array[]
+}
+
+export interface PerfCheckResult {
+  results: [{
+    result: Prediction,
+    is_correct: boolean,
+    expected: number
+  }],
+  total_correct: number,
+  total_incorrect: number
+}
+
 export const classifiers = async (): Promise<Classifier[]> =>
   (await Api.get('/classifiers')
     .then(({ data }) => data)
@@ -107,5 +123,26 @@ export const predictions = async (): Promise<Prediction[]> =>
       })
     )
     .catch(() => [])
+
+export const tryRetrainModel = async (modelId: string): Promise<any> =>
+  await Api.post('/retrain', { modelId })
+    .then(({ data }) => data)
+    .catch(() => null)
+
+export const check_perf = async (classifier_id: number, { labels, data }: PerfCheckData): Promise<PerfCheckResult | null> => {
+  if (labels.length != data.length) {
+    console.log("THIS DOESNT WORK")
+    return null
+  }
+
+  const form = new FormData()
+  form.append("labels", new Blob([JSON.stringify(labels)], { type: 'application/json' }))
+
+  data.forEach((data, i) => {
+    form.append(`image${i}`, new Blob([data.buffer], { type: 'image' }))
+  })
+
+  return await Api.put(`/admin/check_perf/${classifier_id}`, form).then(({ data }) => data).catch(() => null)
+}
 
 export default Api
