@@ -83,3 +83,41 @@ _Present in the meeting:_
 - All team members
 
 ---
+
+**2021-12-06**
+
+In this meeting, we discussed the final presentation layout, additional features and documentation.
+
+As we are approaching the final presentation date, we started to discuss the design and layout
+of our final presentation. Furthermore we added a feature where the user will get different reciepe 
+suggestions for the fruit identified by the system.
+We finished off by talking about the documentation, meeting logs, read-me file for example.
+
+_Present in the meeting:_
+
+- All team members
+
+**2021-12-09**
+
+In this meeting, there were discussions about ML accuracy, Webcam implementation and Front-end visuals.
+
+We discussed the project progress overall, where the accuracy of Fruitrients
+photo recognition was the main topic. The webcam feature and its requirments 
+were also discussed. Additionally we talked about the front-ends visuals.
+
+_Present in the meeting:_
+
+- All team members
+
+**2021-12-13**
+
+In this meeting, there were discussions about the final presentation power point and our live demo.
+
+We were discussing that it is required to divide our presentation, where each one of us
+present a specific part of the project. We decided to firstly have a quick introduction followed
+by a powerpoint presentation and finish it all off with the live demo of Fruitfrient.
+Lastly, we prepare ourselves for any questions that may arise.
+
+_Present in the meeting:_
+
+- All team members
