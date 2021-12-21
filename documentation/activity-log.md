@@ -121,3 +121,28 @@ Lastly, we prepare ourselves for any questions that may arise.
 _Present in the meeting:_
 
 - All team members
+
+**2021-12-16**
+
+In this meeting, we discussed the result of our final presentation and the feedback we received.
+
+We noted down what went well and what we thought we needed to improve.
+Furthermore, the constructive feedback from the other teams 
+was taken into account when noting down what needed to be updated.
+
+_Present in the meeting:_
+
+- All team members
+
+**2021-12-20**
+
+In this meeting, we talked about what is left for our project and the layout for our final report.
+
+The team quickly reached a consensus of what needed 
+to be done to finalize the project. Additionally, 
+we discussed how to divide the final report and how to 
+lay it out to meet all the requirements.
+
+_Present in the meeting:_
+
+- All team members
