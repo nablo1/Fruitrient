@@ -16,3 +16,5 @@ Run the app
 ```
 daphne fruitrient.asgi:app
 ```
+
+The backend also requires a spoonacular api key to function 100% properly, once you have a key put it inside the .env file.
