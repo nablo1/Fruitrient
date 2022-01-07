@@ -65,7 +65,8 @@
         name,
         labels,
       })
-    console.log('Please Upload The Model Firest')
+    name = ''
+    performance = 0
   }
 </script>
 

@@ -22,47 +22,57 @@
   import { NutritionFact, RecipesWithIngredient } from '../types'
 
   let imgSrc: string | undefined
-  let mlResponse: any | null
-  let nutration: NutritionFact | null
+  let mlResponse: any
+  let nutration: NutritionFact | null | any
   let recipes: RecipesWithIngredient[] | null
   let lastPredection: Prediction[]
 
   const imageLoaded = async (data: CustomEvent) => {
     mlResponse = await classify(new Uint8Array(data.detail.binary))
+    console.log('data', mlResponse)
     imgSrc = data.detail.imaSrc
-    //! uncomment before deploy
+    const nutritionFacts = await nutrition_facts(mlResponse.name || 'apple')
+    recipes = await recipes_with_ingredient(mlResponse.name || 'apple')
+    nutration = nutritionFacts!.nutrition
 
-    // const nutritionFacts = await nutrition_facts(
-    //   lastPredection[0]?.name || 'apple'
-    // )
-    // recipes = await recipes_with_ingredient(lastPredection[0]?.name || 'apple')
-    // nutration = nutritionFacts!.nutrition
-
-    // recipeStore.update((prevData) => {
-    //   if (recipes && recipes.length) return [...prevData, ...recipes]
-    //   return prevData
-    // })
+    recipeStore.update((prevData) => {
+      if (recipes && recipes.length) return [...prevData, ...recipes]
+      return prevData
+    })
   }
 
   const webcamUpload = async (data: CustomEvent) => {
     mlResponse = await classify(new Uint8Array(data.detail.binary))
     imgSrc = data.detail.imaSrc
+    const nutritionFacts = await nutrition_facts(mlResponse.name || 'apple')
+    recipes = await recipes_with_ingredient(mlResponse.name || 'apple')
+    nutration = nutritionFacts!.nutrition
+
+    recipeStore.update((prevData) => {
+      if (recipes && recipes.length) return [...prevData, ...recipes]
+      return prevData
+    })
   }
 
   onMount(async () => {
     lastPredection = await predictions()
-    //! uncomment before deploy
-    // imgSrc = lastPredection[0]?.image
-    // const nutritionFacts = await nutrition_facts(
-    //   lastPredection[0]?.name || 'apple'
-    // )
-    // recipes = await recipes_with_ingredient(lastPredection[0]?.name || 'apple')
-    // nutration = nutritionFacts!.nutrition
+    const latestPredection = lastPredection!.pop()
+    imgSrc = latestPredection!.image
+    mlResponse = {
+      name: latestPredection!.name,
+      type: latestPredection!.type,
+      fresh: latestPredection!.fresh,
+    }
+    const nutritionFacts = await nutrition_facts(
+      latestPredection?.name || 'apple'
+    )
+    recipes = await recipes_with_ingredient(latestPredection?.name || 'apple')
+    nutration = nutritionFacts!.nutrition
 
-    // recipeStore.update((prevData) => {
-    //   if (recipes && recipes.length) return [...prevData, ...recipes]
-    //   return prevData
-    // })
+    recipeStore.update((prevData) => {
+      if (recipes && recipes.length) return [...prevData, ...recipes]
+      return prevData
+    })
   })
 </script>
 

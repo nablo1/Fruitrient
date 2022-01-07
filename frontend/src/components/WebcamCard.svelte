@@ -62,44 +62,44 @@
 </script>
 
 <div class="card compact bg-base-150">
-  <h2 class="my-4 card-title text-center text-2xl font-bold card-title">
+  <h2 class="my-2 card-title text-center text-2xl font-bold card-title">
     Use Webcam
   </h2>
 
   <div>
     <div class="justify-center card-actions">
-      {#if stream}
-        <button on:click={captureImage} class="btn btn-outline btn-accent"
-          >Capture Image</button
-        >
-        <button on:click={closeWebcam} class="btn btn-outline btn-accent"
-          >Turn Off Webcam</button
-        >
-      {:else if !url}
-        <button on:click={requestAccess} class="btn btn-outline btn-accent"
-          >Start Webcam</button
-        >
-      {/if}
       {#if url}
-        <div class="justify-center card-actions">
-          <button on:click={uploadImage} class="btn btn-outline btn-accent"
+        <div class="justify-center h-5/6 w-5/6">
+          <img src={url} alt="Captured media" />
+        </div>
+        <div class="justify-center mb-0">
+          <button on:click={uploadImage} class="btn btn-outline btn-sm"
             >Upload Image</button
           >
-          <button on:click={deleteImage} class="btn btn-outline btn-accent"
+          <button on:click={deleteImage} class="btn btn-outline btn-sm"
             >Delete Image</button
           >
         </div>
-        <div class="justify-center card-actions h-5/6 w-5/6">
-          <img src={url} alt="Captured media" />
-        </div>
       {:else}
-        <div class="justify-center card-actions display-block w-5/6">
-          <video bind:this={video} track kind="captions">
+        <div class="justify-center display-block w-5/6">
+          <video bind:this={video} kind="captions">
             />
             <track kind="captions" />
-            <canvas style="display: flex;" bind:this={canvas} />
+            <canvas class="flex" bind:this={canvas} />
           </video>
         </div>
+      {/if}
+            {#if stream}
+        <button on:click={captureImage} class="btn btn-outline btn-sm"
+          >Capture Image</button
+        >
+        <button on:click={closeWebcam} class="btn btn-outline btn-sm"
+          >Turn Off Webcam</button
+        >
+      {:else if !url}
+        <button on:click={requestAccess} class="btn btn-outline btn-sm"
+          >Start Webcam</button
+        >
       {/if}
     </div>
   </div>

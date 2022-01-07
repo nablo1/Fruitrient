@@ -80,7 +80,11 @@
       }`}
     >
       {#if !rejFiles.length && accFiles.length}
-        <form on:submit|preventDefault={handleSubmit} class="overflow-y-auto">
+        <form
+          autocomplete="off"
+          on:submit|preventDefault={handleSubmit}
+          class="overflow-y-auto"
+        >
           <p class="text-xl mb-2">Name</p>
           <div class="form-control mb-2">
             <label for="dataLabel" class="input-group input-group-xs">
@@ -120,7 +124,9 @@
       {:else if rejFiles.length}
         <p>Please Upload correct file format</p>
       {:else}
-        <p>Please Upload Data to start traing new dataset</p>
+        <p class="text-xl text-center">
+          Please Upload Data to Test The Accuracy of The Model
+        </p>
       {/if}
     </div>
   </div>

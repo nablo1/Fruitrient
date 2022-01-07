@@ -32,6 +32,7 @@ export interface NewClassifier {
 }
 
 export interface Prediction {
+  type?: any
   id: number
   name: string
   fresh: boolean
