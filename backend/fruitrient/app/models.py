@@ -1,3 +1,5 @@
+# Author: Ruthger 
+
 import datetime
 import io
 import logging
@@ -5,22 +7,23 @@ import pickle
 from typing import Optional
 from peewee import BooleanField, IntegerField, Model, BlobField, DateTimeField, FloatField, AutoField, CharField, ForeignKeyField, Database
 
-
 from .classification import Classifier, Image 
 
 logger = logging.getLogger(__name__)
 
+# Table for datasets, they dont store data themselves but have a backreference `data` from TrainDataModel
 class DataSetModel(Model):
     id = AutoField()
     name = CharField()
 
+# Individual labeled images, reference the dataset they belong to
 class TrainDataModel(Model):
     dataset = ForeignKeyField(DataSetModel, backref="data")
     label = CharField()
     image = BlobField()
 
+# Extension class to for common access to datasets
 class DataSetModelExt:
-    
     def push(name, images):
         new = DataSetModel(name=name)
         new.save()
@@ -47,6 +50,7 @@ class DataSetModelExt:
                 .select(DataSetModel) \
                 .order_by(DataSetModel.id.desc())
 
+# Describes a concrete classifier, `model_bytes` must be a pickled object deriving from `Classifier`
 class ClassifierModel(Model):
     id = AutoField()
     name = CharField()
@@ -55,6 +59,7 @@ class ClassifierModel(Model):
     model_bytes = BlobField()
     performance = FloatField()
 
+# Extension class to for common access to classifiers
 class ClassifierModelExt:
     def get(idx: int) -> Optional[ClassifierModel]:
         try:
@@ -74,6 +79,7 @@ class ClassifierModelExt:
                 .select(ClassifierModel) \
                 .order_by(ClassifierModel.id.desc())
 
+# Stores predictions made by classifiers, each prediction backreferences the classifier they were made from
 class PredictionModel(Model):
     id = AutoField()
     predicted_by = ForeignKeyField(ClassifierModel, backref='predictions')
@@ -81,6 +87,7 @@ class PredictionModel(Model):
     name = CharField()
     fresh = BooleanField()
 
+# Extension class to for common access to predictions
 class PredictionModelExt:
     def iter():
         return PredictionModel \
@@ -98,6 +105,7 @@ class ClassifierHistoryModel(Model):
     classifier = ForeignKeyField(ClassifierModel)
     selected_date = DateTimeField(default=datetime.datetime.now)
 
+# Extension class to for common access to classifier history
 class ClassifierHistoryModelExt:
     def get(idx: int) -> Optional[ClassifierHistoryModel]:
         try:
@@ -138,7 +146,7 @@ def bind(db: Database):
     db.bind(models)
     db.create_tables(models)
 
-
+# Classifier like interface that pulls the current active classifier and stores the made prediction via PredictionModel
 class TrackedClassifier:
 
     def classify(self, image: Image) -> Optional[PredictionModel]:
