@@ -41,11 +41,11 @@ def process_file(file, res):
 
 
 # USAGE
-# python img_to_csv.py path/to/images/dir output/outfile.csv
+# python img_to_csv.py path/to/images/dir output/outfile.db
 
 source_dir, output = list(os.sys.argv)[1:3]
 pics_train, pics_test = pics(source_dir)
-sort_override = {"type": ["freshApple Braeburn", "rottenApple Braeburn", "freshBanana", "rottenBanana", "freshOrange", "rottenOrange"]}
+sort_override = {"type": []}
 
 labels = {}
 
@@ -91,17 +91,10 @@ def lbls2(path):
 def fgor(arr): return [(os.path.join(root, name), lbls2(root))
                        for root, name in arr]
 
-
-width = 28
-height = 28
-
+width = 100
+height = 100
 
 def write_data(cursor, table, data):
-    cursor.execute(f'''
-        create table {table}
-        (label integer, image blob)
-    ''')
-
     for path, labelings in data:
         # print(path, labelings)
         image = Image.open(path).resize((width, height))
@@ -128,11 +121,15 @@ except:
 conn = sqlite3.connect(output)
 cursor = conn.cursor()
 
-write_data(cursor, "train_images", ba_train)
-print("total train entries:", len(ba_train))
+cursor.execute(f'''
+        create table {"data_df"}
+        (label integer, image blob)
+''')
 
-write_data(cursor, "test_images", ba_test)
-print("total test entries: ", len(ba_test))
+write_data(cursor, "data_df", ba_train)
+write_data(cursor, "data_df", ba_test)
+
+print("total entries: ", len(ba_test) + len(ba_train))
 
 conn.commit()
 
