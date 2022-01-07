@@ -22,27 +22,32 @@
 <div class="card w-full h-full bg-base-100">
   <div class="card-body flex flex-col justify-between">
     <p class="card-title text-center capitalize">Performance Check</p>
-    <div class="flex flex-row justify-between">
-      <p class="card-title mb-0">Model</p>
-      <select
-        class="select select-bordered w-full max-w-xs"
-        bind:value={selected_model}
-      >
-        {#each models as option, i}
-          <option value={i}>{option.name} v{option.generation}</option>
-        {/each}
-      </select>
+    <div class="form-control w-full mb-2">
+      <label class="input-group input-group-xs">
+        <span>Model</span>
+        <select
+          class="select select-bordered select-xs w-full max-w-xs mx-2"
+          bind:value={selected_model}
+        >
+          {#each models as option, i}
+            <option value={i}>{option.name} v{option.generation}</option>
+          {/each}
+        </select>
+      </label>
     </div>
-    <div class="flex flex-row justify-between">
-      <p class="card-title mb-0">Dataset</p>
-      <select
-        class="select select-bordered w-full max-w-xs"
-        bind:value={selected_dataset}
-      >
-        {#each datasets as option, i}
-          <option value={i}>{option.name}</option>
-        {/each}
-      </select>
+
+    <div class="form-control w-full mb-2">
+      <label class="input-group input-group-xs">
+        <span>Dataset</span>
+        <select
+          class="select select-bordered select-xs w-full max-w-xs mx-2"
+          bind:value={selected_dataset}
+        >
+          {#each datasets as option, i}
+            <option value={i}>{option.name}</option>
+          {/each}
+        </select>
+      </label>
     </div>
     <button
       on:click={() =>
@@ -50,7 +55,7 @@
           dataset: datasets[selected_dataset],
           model: models[selected_model],
         })}
-      class={`btn btn-block btn-square btn-outline ${
+      class={`btn w-full btn-xs btn-outline ${
         loading && 'loading btn-disabled'
       }`}>Check</button
     >
