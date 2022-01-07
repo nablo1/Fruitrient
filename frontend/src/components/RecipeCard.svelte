@@ -13,10 +13,10 @@
       class="rounded-xl h-full w-full object-cover"
     />
   </figure>
-  <div class="card-body">
+  <div class="card-body flex flex-col justify-between h-full">
     <h2 class="card-title">{recipe.title}</h2>
-    <div class="justify-center card-actions">
-      <Link to={`/recipe/${recipe.id}`} class="btn btn-outline btn-accent"
+    <div>
+      <Link to={`/recipe/${recipe.id}`} class="btn btn-outline btn-sm"
         >Read More</Link
       >
     </div>

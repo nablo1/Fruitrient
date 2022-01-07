@@ -65,10 +65,6 @@
   }
 
   $: update_stuff(testing)
-  $: console.log('activeMl: ', activeMl)
-  $: console.log('mlVersions: ', mlVersions)
-  $: console.log('activeMlHistory: ', activeMlHistory)
-  $: console.log('datasets: ', datasets)
 
   onMount(async () => {
     await update()

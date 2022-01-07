@@ -30,7 +30,7 @@
         </div>
         <div>
           <b>Is Fresh:</b>
-          <span>{mlResponse?.fresh}</span>
+          <span>{mlResponse?.fresh ? 'Yes' : 'No'}</span>
         </div>
       {:else}
         <p>Please Upload An Image to Classify</p>
