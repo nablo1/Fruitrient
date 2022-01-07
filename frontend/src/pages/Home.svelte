@@ -1,3 +1,4 @@
+<!-- Author: Idrees  -->
 <script>
   import { Link } from 'svelte-navigator'
 </script>

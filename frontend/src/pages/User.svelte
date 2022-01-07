@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Bhavya -->
 <script lang="ts">
   // components
   import FileUpload from '../components/FileUpload.svelte'

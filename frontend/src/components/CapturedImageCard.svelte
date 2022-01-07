@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Bhavya, Rilind -->
 <script lang="ts">
   import { Classification } from '../Api'
 

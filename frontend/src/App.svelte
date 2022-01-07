@@ -1,3 +1,4 @@
+<!-- Author: Idrees, Bhavya  -->
 <script lang="ts">
   import { Router, Route } from 'svelte-navigator'
   import User from './pages/User.svelte'

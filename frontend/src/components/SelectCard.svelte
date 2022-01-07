@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Ruthger -->
 <script lang="ts">
   export let options: any[]
   export let transform = (opt: any) => opt

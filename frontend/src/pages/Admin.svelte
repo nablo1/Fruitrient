@@ -1,3 +1,4 @@
+<!-- Author: Idrees, Bhavya, Ruthger  -->
 <script lang="ts">
   import Chart from '../components/Chart.svelte'
   import NavBar from '../components/NavBar.svelte'
@@ -182,18 +183,6 @@
       transform={(el) => `${el.name} v${el.generation}`}
     />
   </div>
-  <div class="row-span-2 shadow-lg bg-base-100 rounded-box">
-    {#if !results}
-      <PerfCheck
-        {datasets}
-        models={mlVersions}
-        on:submitted={handlePerfCheck}
-        loading={waiting_for_performance}
-      />
-    {:else}
-      <Result {results} on:onClose={() => (results = null)} />
-    {/if}
-  </div>
   <div class="card col-span-1 row-span-2 shadow-lg xl:col-span-2 bg-base-100">
     <div class="card-body">
       <h2 class="my-4 text-4xl font-bold card-title">Statistics</h2>
@@ -206,7 +195,18 @@
   <div class="row-span-2 shadow-lg bg-base-100 rounded-box">
     <ModelUpload on:fileLoaded={fileLoaded} />
   </div>
-
+  <div class="row-span-1 shadow-lg bg-base-100 rounded-box">
+    {#if !results}
+      <PerfCheck
+        {datasets}
+        models={mlVersions}
+        on:submitted={handlePerfCheck}
+        loading={waiting_for_performance}
+      />
+    {:else}
+      <Result {results} on:onClose={() => (results = null)} />
+    {/if}
+  </div>
   <div class="col-span-1 row-span-1 shadow-lg xl:col-span-2 rounded-box">
     <FileUploadWithForm {mlVersions} on:fileUpload={handleDataSetUpload} />
   </div>

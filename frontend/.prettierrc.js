@@ -1,3 +1,4 @@
+// Author: Bhavya
 module.exports = {
   endOfLine: 'auto',
   tabWidth: 2,
