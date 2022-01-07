@@ -146,3 +146,43 @@ lay it out to meet all the requirements.
 _Present in the meeting:_
 
 - All team members
+
+**2021-12-27**
+
+In this meeting, we discussed the team members contributions, minor updates to the code and diveded
+workload for the final report. 
+
+At this point we were well and away
+with the report. The team set an internal
+deadline as to when we needed to be finished.
+
+_Present in the meeting:_
+
+- All team members
+
+**2021-12-30**
+
+In this meeting, we had a quick update on the final report and discussed any potential questions
+among the team members.
+
+We were now in the final stages of our project.
+Some parts were now decided to be done collectivly
+in the report to ensure that everything was covered.
+
+_Present in the meeting:_
+
+- All team members
+
+**2022-01-06**
+
+Final meeting before the final report submission.
+
+The team now made sure everyone was happy with the outcome.
+We discussed what we enjoyed and what could have been done
+differently. The team members added their signatures to the
+document and all that was left was some small formattnig of
+the text and then to be handed in before the deadline.
+
+_Present in the meeting:_
+
+- All team members
