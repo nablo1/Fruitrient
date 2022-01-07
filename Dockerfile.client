@@ -1,0 +1,9 @@
+FROM node:alpine as frontend-builder
+ADD ./frontend /opt/fruitrient
+WORKDIR /opt/fruitrient
+RUN npm i
+RUN npm run build
+
+FROM nginx:stable-alpine
+COPY ./deployment/nginx/fruitrient.conf /etc/nginx/conf.d/default.conf
+COPY --from=frontend-builder /opt/fruitrient/public /app/build

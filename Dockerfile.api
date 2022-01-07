@@ -1,0 +1,10 @@
+FROM python:3.9
+COPY ./backend /opt/fruitrient
+WORKDIR /opt/fruitrient
+RUN pip install -r requirements.txt 
+RUN pip install -U 'Twisted[tls,http2]'
+RUN echo 'SPOONACULAR_API_KEY="${api_key}"' > .env
+
+EXPOSE 8000
+
+CMD ["daphne", "-b", "0.0.0.0", "fruitrient.asgi:app"]
