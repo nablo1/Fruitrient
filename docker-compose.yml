@@ -1,0 +1,20 @@
+# step 01: docker-compose build --build-arg api_key=xxxxxxxxxxxxxx
+# step 02: api_key=xxxxxxx docker-compose up
+# step 03: http://localhost:3000/
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
+    image: api
+    ports:
+      - "8000:8000"
+    environment:
+      - api_key=${api_key}
+  client:
+    build: 
+      context: .
+      dockerfile: Dockerfile.client
+    image: client
+    ports: 
+      - "3000:80"
