@@ -42,9 +42,7 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Id</th>
-          <th>Name</th>
-          <th>Type</th>
+          <th>Predicted</th>
           <th>Expected</th>
           <th>Is Correct</th>
         </tr>
@@ -53,10 +51,16 @@
         {#each results.results as result, i}
           <tr>
             <th>{i}</th>
-            <td>{result.result.id}</td>
-            <td>{result.result.name}</td>
-            <td>{result.result.type}</td>
-            <td>{result.expected}</td>
+            <td
+              >{result.result.name} ({result.result.fresh
+                ? 'Fresh'
+                : 'Rotten'})</td
+            >
+            <td
+              >{result.expected_name} ({result.expected_fresh
+                ? 'Fresh'
+                : 'Rotten'})</td
+            >
             <td>{result.is_correct}</td>
           </tr>
         {/each}

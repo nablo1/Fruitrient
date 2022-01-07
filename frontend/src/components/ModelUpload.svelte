@@ -3,7 +3,10 @@
   import { createEventDispatcher } from 'svelte'
 
   const title = 'Upload'
-  let performance = 0
+  let image_size_y = 100
+  let image_size_x = 100
+  let image_format = 'L'
+  let verify_dataset_id = -1
   let name = null
   let model_bytes = null
   let labels = null
@@ -52,7 +55,15 @@
 
   const handleSubmit = () => {
     if (accpetedFileLength == 2)
-      dispatch('fileLoaded', { model_bytes, performance, name, labels })
+      dispatch('fileLoaded', {
+        model_bytes,
+        image_format,
+        image_size_x,
+        image_size_y,
+        verify_dataset_id,
+        name,
+        labels,
+      })
     console.log('Please Upload The Model Firest')
   }
 </script>
@@ -111,13 +122,43 @@
         </div>
         <div class="form-control">
           <label class="input-group input-group-xs mb-2">
-            <span>Performance</span>
+            <span>X</span>
             <input
-              placeholder="Performance"
+              placeholder="X size"
               class="input input-bordered input-xs mx-5 w-full"
               type="number"
               required
-              bind:value={performance}
+              bind:value={image_size_x}
+            />
+          </label>
+          <label class="input-group input-group-xs mb-2">
+            <span>Y</span>
+            <input
+              placeholder="Y size"
+              class="input input-bordered input-xs mx-5 w-full"
+              type="number"
+              required
+              bind:value={image_size_y}
+            />
+          </label>
+          <label class="input-group input-group-xs mb-2">
+            <span>Type</span>
+            <input
+              placeholder="Type"
+              class="input input-bordered input-xs mx-5 w-full"
+              type="text"
+              required
+              bind:value={image_format}
+            />
+          </label>
+          <label class="input-group input-group-xs mb-2">
+            <span>Verify</span>
+            <input
+              placeholder="Type"
+              class="input input-bordered input-xs mx-5 w-full"
+              type="number"
+              required
+              bind:value={verify_dataset_id}
             />
           </label>
         </div>

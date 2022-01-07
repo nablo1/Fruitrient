@@ -10,6 +10,7 @@ export interface Classifier {
   id: number
   name: string
   performance: number
+  generation: number
   creation_date: string
 }
 
@@ -22,20 +23,22 @@ export interface ActiveClassifier {
 export interface NewClassifier {
   name: string
   labels: { [key: string]: number }
-  performance: number,
   model_bytes: Uint8Array
+  image_format: 'L' | 'RGB'
+  image_size_y: number
+  image_size_x: number
+  verify_dataset_id: number
 }
 
 export interface Prediction {
   id: number
   name: string
-  type: number
   fresh: boolean
   image?: string
 }
 
 export interface PerfCheckData {
-  labels: number[],
+  labels: string[],
   data: Uint8Array[]
 }
 
@@ -43,7 +46,8 @@ export interface PerfCheckResult {
   results: [{
     result: Prediction,
     is_correct: boolean,
-    expected: number
+    expected_name: string,
+    expected_fresh: boolean
   }],
   total_correct: number,
   total_incorrect: number
@@ -83,11 +87,12 @@ export const classify = async (
     .catch(() => null)
 
 export const upload_classifier = async (
-  { model_bytes, performance, name, labels }: NewClassifier
+  { model_bytes, image_format, image_size_x, image_size_y, name, labels, verify_dataset_id }: NewClassifier
 ): Promise<Boolean> => {
   const data = new FormData()
   data.append('model_bytes', new Blob([model_bytes.buffer]))
-  data.append('meta', new Blob([JSON.stringify({ name, performance })], { type: 'application/json' }))
+  console.log({ name, image_format, image_size_x, image_size_y })
+  data.append('meta', new Blob([JSON.stringify({ name, image_format, image_size_x, image_size_y, verify_dataset_id })], { type: 'application/json' }))
   data.append(
     'labels',
     new Blob([JSON.stringify(labels)], { type: 'application/json' })
@@ -123,25 +128,47 @@ export const predictions = async (): Promise<Prediction[]> =>
     )
     .catch(() => [])
 
-export const tryRetrainModel = async (modelId: string): Promise<any> =>
-  await Api.post('/retrain', { modelId })
+export const retrain_model = async (model_id: number, dataset_id: number, dataset_verify_id: number): Promise<boolean> =>
+  await Api.put(`/admin/retrain/${model_id}`, { dataset_id, dataset_verify_id })
+    .then(() => true)
+    .catch(() => false)
+
+export const check_perf = async (classifier_id: number, dataset_id: number): Promise<PerfCheckResult | null> =>
+  await Api.put(`/admin/check_perf/${classifier_id}`, { dataset_id })
     .then(({ data }) => data)
     .catch(() => null)
 
-export const check_perf = async (classifier_id: number, { labels, data }: PerfCheckData): Promise<PerfCheckResult | null> => {
-  if (labels.length != data.length) {
-    console.log("THIS DOESNT WORK")
-    return null
-  }
 
+export interface DatasetData {
+  name: string,
+  labels: { name: string, fresh: boolean }[],
+  data: Uint8Array[]
+}
+
+export const post_dataset = async ({ name, labels, data }: DatasetData): Promise<boolean> => {
   const form = new FormData()
+  form.append("name", new Blob([name], { type: 'text/plain' }))
   form.append("labels", new Blob([JSON.stringify(labels)], { type: 'application/json' }))
 
+  console.log(data)
   data.forEach((data, i) => {
     form.append(`image${i}`, new Blob([data.buffer], { type: 'image' }))
   })
 
-  return await Api.put(`/admin/check_perf/${classifier_id}`, form).then(({ data }) => data).catch(() => null)
+  return await Api.post(`/datasets`, form).then(() => true).catch(() => false)
+}
+
+export interface Dataset {
+  id: number,
+  name: string,
+  image_count: number
+}
+
+export const get_datasets = async (): Promise<Dataset[]> =>
+  await Api.get("/datasets").then(({ data }) => data).catch(() => [])
+
+export const delete_dataset = async (id: number): Promise<boolean> => {
+  return false
 }
 
 export default Api
