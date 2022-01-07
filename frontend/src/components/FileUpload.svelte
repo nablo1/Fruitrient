@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Ruthger, Bhavya -->
 <script>
   import Dropzone from 'svelte-file-dropzone'
   import { createEventDispatcher } from 'svelte'

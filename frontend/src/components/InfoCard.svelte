@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Bhavya-->
 <div class="card">
   <div class="card-body">
     <h2 class="my-4 text-4xl font-bold card-title">Fruitrient</h2>

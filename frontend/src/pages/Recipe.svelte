@@ -1,3 +1,4 @@
+<!-- Author: Idrees  -->
 <script lang="ts">
   import { navigate } from 'svelte-navigator'
   import { RecipesWithIngredient } from '../types'

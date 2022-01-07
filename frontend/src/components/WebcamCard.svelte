@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Bhavya, Rughter, Rilind -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { decode } from 'base64-arraybuffer'

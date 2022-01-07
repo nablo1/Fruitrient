@@ -1,3 +1,4 @@
+<!-- Author: Idrees, Bhavya, Ruthger  -->
 <script lang="ts">
   import Chart from '../components/Chart.svelte'
   import NavBar from '../components/NavBar.svelte'

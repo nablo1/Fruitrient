@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Bhavya -->
 <script lang="ts">
   import { afterUpdate } from 'svelte'
   import Chart from 'chart.js/auto'

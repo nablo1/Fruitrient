@@ -1,3 +1,4 @@
+<!-- Authors: Idrees, Bhavya -->
 <script lang="ts">
   import { Nutrition } from '../types'
 

@@ -1,3 +1,4 @@
+<!-- Author: Idrees  -->
 <script lang="ts">
   export let titleOne: string
   export let titleTwo: string
