@@ -7,8 +7,8 @@ from PIL import Image
 import os
 import os.path
 import csv
-from functools import reduce
-
+import sqlite3
+import io
 
 def pics(myDir, limit=100):
     ret_train = []
@@ -34,7 +34,7 @@ def pics(myDir, limit=100):
 
 def process_file(file, res):
     img_file = Image.open(file)
-    img_grey = img_file.resize(res).convert('L')
+    img_grey = img_file.resize(res)
 
     value = np.asarray(img_grey.getdata(), dtype=np.int32)
     return value.flatten()
@@ -45,11 +45,11 @@ def process_file(file, res):
 
 source_dir, output = list(os.sys.argv)[1:3]
 pics_train, pics_test = pics(source_dir)
-sort_override = {"type": ["Apple Braeburn", "Banana", "Orange"]}
+sort_override = {"type": ["freshApple Braeburn", "rottenApple Braeburn", "freshBanana", "rottenBanana", "freshOrange", "rottenOrange"]}
 
 labels = {}
 
-re_groups = "^(?P<quality>rotten|fresh)?(?P<type>.*)"
+re_groups = "^(?P<type>.*)"
 
 
 def lbls(path): return re.search(
@@ -96,33 +96,44 @@ width = 28
 height = 28
 
 
-def write_data(csv_path, data):
-    with open(csv_path, 'w') as f:
-        writer = csv.writer(f)
+def write_data(cursor, table, data):
+    cursor.execute(f'''
+        create table {table}
+        (label integer, image blob)
+    ''')
 
-        csv_labels = [f"pixel{i+1}" for i in range(width * height)]
-        for k in labels.keys():
-            csv_labels.insert(0, k)
+    for path, labelings in data:
+        # print(path, labelings)
+        image = Image.open(path).resize((width, height))
+        image_bytes = io.BytesIO()
+        image.save(image_bytes, format='png')
+        image_bytes.seek(0)
 
-        writer.writerow(csv_labels)
+        _, label_value = next(iter(labelings))
+        cursor.execute(f'''
+            insert into {table}
+            (label, image) values (?, ?)
+        ''', (label_value, image_bytes.read()))
 
-        for path, labelings in data:
-            # print(path, labelings)
-            value = list(process_file(path, (width, height)))
-
-            for k, v in labelings:
-                value.insert(0, v)
-
-            writer.writerow(value)
 
 
 ba_train = fgor(pics_train)
 ba_test = fgor(pics_test)
 
+try:
+    os.remove(output)
+except:
+    pass
 
-write_data(output + "-train.csv", ba_train)
+conn = sqlite3.connect(output)
+cursor = conn.cursor()
+
+write_data(cursor, "train_images", ba_train)
 print("total train entries:", len(ba_train))
-write_data(output + "-test.csv", ba_test)
+
+write_data(cursor, "test_images", ba_test)
 print("total test entries: ", len(ba_test))
+
+conn.commit()
 
 print(json.dumps(labels, indent=4))
