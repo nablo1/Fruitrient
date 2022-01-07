@@ -1,0 +1,10 @@
+{
+    "type": {
+        "fresh_orange": 2,
+        "stale_orange": 5,
+        "fresh_apple": 0,
+        "fresh_banana": 1,
+        "stale_banana": 4,
+        "stale_apple": 3
+    }
+}
