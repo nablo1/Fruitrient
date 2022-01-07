@@ -28,10 +28,6 @@
           <span>{mlResponse?.name}</span>
         </div>
         <div>
-          <b>Type:</b>
-          <span>{mlResponse?.type}</span>
-        </div>
-        <div>
           <b>Is Fresh:</b>
           <span>{mlResponse?.fresh}</span>
         </div>

@@ -3,16 +3,54 @@ import io
 import logging
 import pickle
 from typing import Optional
-from peewee import BooleanField, Model, BlobField, DateTimeField, FloatField, AutoField, IntegerField, CharField, ForeignKeyField, Database
+from peewee import BooleanField, IntegerField, Model, BlobField, DateTimeField, FloatField, AutoField, CharField, ForeignKeyField, Database
 
 
-from .classification import Classifier, Image, PredictionRes 
+from .classification import Classifier, Image 
 
 logger = logging.getLogger(__name__)
+
+class DataSetModel(Model):
+    id = AutoField()
+    name = CharField()
+
+class TrainDataModel(Model):
+    dataset = ForeignKeyField(DataSetModel, backref="data")
+    label = CharField()
+    image = BlobField()
+
+class DataSetModelExt:
+    
+    def push(name, images):
+        new = DataSetModel(name=name)
+        new.save()
+
+        for image, label in images:
+            image_bytes = io.BytesIO()
+            image.save(image_bytes, format='png')
+            image_bytes.seek(0)
+
+            TrainDataModel(
+                dataset = new.id,
+                label=label,
+                image = image_bytes.read(),
+            ).save()
+
+    def get(idx: int) -> Optional[DataSetModel]:
+        try:
+            return DataSetModel.get_by_id(idx)
+        except:
+            return None
+
+    def iter():
+        return DataSetModel \
+                .select(DataSetModel) \
+                .order_by(DataSetModel.id.desc())
 
 class ClassifierModel(Model):
     id = AutoField()
     name = CharField()
+    generation = IntegerField()
     creation_date = DateTimeField(default=datetime.datetime.now)
     model_bytes = BlobField()
     performance = FloatField()
@@ -41,7 +79,6 @@ class PredictionModel(Model):
     predicted_by = ForeignKeyField(ClassifierModel, backref='predictions')
     image = BlobField()
     name = CharField()
-    type = IntegerField()
     fresh = BooleanField()
 
 class PredictionModelExt:
@@ -77,16 +114,11 @@ class ClassifierHistoryModelExt:
     def push(classifier_id: int) -> Optional[ClassifierHistoryModel]:
         front = ClassifierHistoryModelExt.get(-1)
         if front != None and front.classifier.id == classifier_id:
-            logger.info("WTF")
             return front
         elif ClassifierModelExt.get(classifier_id) != None:
             ret = ClassifierHistoryModel(classifier = classifier_id)
             ret.save()
-            logger.info("WTF2")
-
             return ret
-        else:
-            logger.info("WTF4")
 
     
     def iter():
@@ -99,7 +131,9 @@ def bind(db: Database):
     models = [
         ClassifierModel,
         PredictionModel,
-        ClassifierHistoryModel
+        ClassifierHistoryModel,
+        DataSetModel,
+        TrainDataModel
     ]
     db.bind(models)
     db.create_tables(models)
@@ -118,7 +152,7 @@ class TrackedClassifier:
             return None
 
         # TODO: somehow cache this?
-        cl = pickle.loads(classifier.classifier.model_bytes)
+        cl: Classifier = pickle.loads(classifier.classifier.model_bytes)
         res = cl.classify(image)
 
         if res == None:
@@ -132,7 +166,6 @@ class TrackedClassifier:
                 predicted_by = classifier.classifier.id,
                 image = image_bytes.read(),
                 name = res.name,
-                type = res.type,
                 fresh = res.fresh,
             )
             

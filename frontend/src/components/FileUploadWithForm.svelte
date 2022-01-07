@@ -41,16 +41,20 @@
 
   const handleSubmit = async () => {
     let acc: Uint8Array[] = []
-    const lbls: number[] = []
+    const lbls: string[] = []
     let i = 0
     for (const file of filesByteArray) {
       const bytes = await Promise.all(file)
-      bytes.forEach(() => lbls.push((labels[i] as any as number) + 0))
+      bytes.forEach(() => lbls.push(labels[i]))
       acc = [...acc, ...bytes]
       i += 1
     }
 
-    dispatch('fileUpload', {data: { labels: lbls, data: acc}, mlVersion: selected })
+    dispatch('fileUpload', {
+      labels: lbls,
+      data: acc,
+      name: selected,
+    })
   }
 </script>
 
@@ -79,12 +83,12 @@
           <p class="text-xl mb-2">Name</p>
           <div class="form-control mb-2">
             <label for="dataLabel" class="input-group input-group-xs">
-              <span>ML</span>
-              <select bind:value={selected} class="select select-bordered select-xs w-full max-w-xs mx-2">
-                {#each mlVersions as option}
-                  <option value={option.id} >{option.name}</option>
-                {/each}
-              </select>
+              <span>set</span>
+              <input
+                type="text"
+                bind:value={selected}
+                class="input input-bordered input-xs w-full"
+              />
             </label>
           </div>
           <p class="text-xl mb-2">Labels</p>
@@ -95,15 +99,15 @@
                 <input
                   required
                   id={'dataLabel' + i}
-                  type="number"
+                  type="text"
                   placeholder="Label"
-                  class="input input-bordered input-xs w-full mx-5"
+                  class="input input-bordered input-xs w-full"
                   bind:value={labels[i]}
                 />
               </label>
             </div>
           {/each}
-          <div class="form-control mb-2  mr-5">
+          <div class="form-control mb-2 mr-5">
             <button
               class={`btn btn-xs btn-outline btn-block ${
                 progress && 'loading'
@@ -115,7 +119,7 @@
       {:else if rejFiles.length}
         <p>Please Upload correct file format</p>
       {:else}
-        <p>Please Upload Data to start traing new ML model</p>
+        <p>Please Upload Data to start traing new dataset</p>
       {/if}
     </div>
   </div>
