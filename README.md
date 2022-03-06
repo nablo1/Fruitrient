@@ -53,6 +53,8 @@ Fruitrient uses a number of open source projects and libraries:
 - [Keras](https://keras.io/)
 - [scikit-learn](https://scikit-learn.org/stable/)
 
-## Activity Log
+## Screenshots
 
-Detailed information on our weekly meetings and discussions are documented in the [activity log](documentation/activity-log.md).
+![imgonline-com-ua-twotoone-lEwv62TgRBvVnDil](https://user-images.githubusercontent.com/47000193/156924542-2fc0af36-8885-4245-baa4-d50004013dcd.jpg)
+
+
